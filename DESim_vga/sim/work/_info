@@ -1,0 +1,190 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dD:/University/Year 2/ece241/final_project/smaze/DESim_vga/sim
+vmaze_draw
+Z1 !s110 1794957284
+!i10b 1
+!s100 TnYd<ciN=kVXfQfc0kYN52
+Ik2DijM:R9YdigT>hUID=U0
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+R0
+Z3 w1794957252
+Z4 8../milestone_1.v
+Z5 F../milestone_1.v
+L0 81
+Z6 OV;L;10.5b;63
+r1
+!s85 0
+31
+Z7 !s108 1794957284.000000
+Z8 !s107 ../vga_adapter/vga_controller.v|../vga_adapter/vga_address_translator.v|../vga_adapter/vga_adapter.v|../top.v|../milestone_1.v|
+Z9 !s90 ../milestone_1.v|../top.v|../vga_adapter/vga_adapter.v|../vga_adapter/vga_address_translator.v|../vga_adapter/vga_controller.v|
+!i113 1
+Z10 tCvgOpt 0
+vmilestone_1
+R1
+!i10b 1
+!s100 _c`3lKAOEg`O:;[^8AB:60
+I4ej:zgRMFTBTe`M[In1[R1
+R2
+R0
+R3
+R4
+R5
+L0 9
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+vtb
+R1
+!i10b 1
+!s100 NcRbSdG<85Gk1Q^G>=6IN1
+I>4gBVN2Yd729jFEF1:MKn1
+R2
+R0
+Z11 w1794842018
+8../tb/tb.v
+F../tb/tb.v
+L0 6
+R6
+r1
+!s85 0
+31
+R7
+!s107 ../tb/tb.v|
+!s90 ../tb/tb.v|
+!i113 1
+R10
+vtop
+R1
+!i10b 1
+!s100 _3WYK7kB6Aj<5_MajadEj3
+I?`cmJ]oQTX97J]0GAV2_h3
+R2
+R0
+w1794957277
+8../top.v
+F../top.v
+L0 1
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+vvga_adapter
+R1
+!i10b 1
+!s100 V^:0bTh:CPVbobAXI[EZf0
+IWIz^cb<19KE1>eSC9>3D11
+R2
+R0
+R11
+Z12 8../vga_adapter/vga_adapter.v
+Z13 F../vga_adapter/vga_adapter.v
+L0 13
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+vvga_address_translator
+R1
+!i10b 1
+!s100 gmKI:@CM4Ife2NfF^7R^h1
+IQf6bgg416;`z;57fofQV23
+R2
+R0
+R11
+8../vga_adapter/vga_address_translator.v
+F../vga_adapter/vga_address_translator.v
+L0 4
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+vvga_controller
+R1
+!i10b 1
+!s100 X:Za8N9JkhcSgC_ATF02k3
+IjhYa6S9;BCQ0R>55aGh7N3
+R2
+R0
+R11
+8../vga_adapter/vga_controller.v
+F../vga_adapter/vga_controller.v
+L0 5
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+vvga_convert
+R1
+!i10b 1
+!s100 hLc3@^Q;mQ;6iH?BjUBaX1
+I5FKT<Y<ScFXYS_hd;@<QG2
+R2
+R0
+R11
+R12
+R13
+L0 170
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+vvga_ff
+R1
+!i10b 1
+!s100 m>FL9dCYekTo;WhYd]i@A1
+IR]T]CWYeeRn;489g^`m:h3
+R2
+R0
+R11
+R12
+R13
+L0 154
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10

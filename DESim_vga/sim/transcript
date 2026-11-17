@@ -1,0 +1,21 @@
+# vsim -pli "D:\Downloads\DESim\modelsim.vpi" -Lf 220model -Lf altera_mf_ver -Lf verilog -t 1ns -c -do "run -all" tb 
+# Start time: 18:14:47 on Nov 17,2026
+# Loading work.tb
+# Loading work.top
+# Loading work.milestone_1
+# Loading work.maze_draw
+# Loading work.vga_adapter
+# Loading altera_mf_ver.altsyncram
+# Loading work.vga_controller
+# Loading work.vga_address_translator
+# Loading work.vga_convert
+# Loading work.vga_ff
+# Loading altera_mf_ver.altsyncram_body
+# Loading altera_mf_ver.ALTERA_DEVICE_FAMILIES
+# Loading altera_mf_ver.ALTERA_MF_MEMORY_INITIALIZATION
+# Loading D:\Downloads\DESim\modelsim.vpi
+# run -all
+# Time scaling: 0.0001 sim seconds per real-time second
+# 
+# 
+# Connected to server!

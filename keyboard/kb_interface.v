@@ -26,6 +26,7 @@ module kb_interface(CLOCK_50, resetn, PS2_CLK, PS2_DAT, moving, direction);
     always @(posedge CLOCK_50) begin
         if (!resetn) begin
             moving <= 1'b0; // stop
+            direction <= 2'd0;
             break_code_received <= 1'b0;
         end
         else if (received_data_en) begin

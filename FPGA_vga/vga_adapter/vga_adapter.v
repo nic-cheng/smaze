@@ -43,7 +43,7 @@ module vga_adapter( resetn, clock, color, x, y, write,
                     VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, VGA_BLANK_N, VGA_SYNC_N, VGA_CLK);
  
     // The VGA resolution, which can be set to "640x480", "320x240", and "160x120"
-    parameter RESOLUTION = "640x480";
+    parameter RESOLUTION = "320x240";
     /* The number of bits used to represent a pixel. An equal number of bits is allocated for 
      * the red (R), green (G) and blue (B) components. Thus, for COLOR_DEPTH = 3, there is one bit
      * for each of the R, G, B components, and eight different colors can be displayed. */

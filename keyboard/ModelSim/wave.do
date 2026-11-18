@@ -1,28 +1,17 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -noupdate -label CLOCK_50 -radix binary /testbench/CLOCK_50
-add wave -noupdate -label KEY -radix binary /testbench/KEY
+add wave -noupdate -label CLOCK_50 /testbench/CLOCK_50
+add wave -noupdate -label KEY /testbench/KEY
 add wave -noupdate -label LEDR -radix binary /testbench/LEDR
-add wave -noupdate -divider part1
-add wave -noupdate -label y_Q -radix binary /testbench/U1/moving
-add wave -noupdate -label go -radix binary /testbench/U1/direction
-add wave -noupdate -label go -radix binary /testbench/U1/kbi/break_code_received
-add wave -noupdate -label half_sec_enable -radix binary /testbench/U1/half_sec_enable
+add wave -noupdate -label key_action /testbench/key_action
+add wave -noupdate -label scan_code -radix hexadecimal /testbench/scan_code
+add wave -noupdate -label PS2_CLK /testbench/PS2_CLK
+add wave -noupdate -label PS2_DAT /testbench/PS2_DAT
+add wave -noupdate -label direction -radix binary /testbench/DUT/direction
+add wave -noupdate -label received_data -radix hexadecimal /testbench/DUT/kbi/received_data
+add wave -noupdate -label received_data_en /testbench/DUT/kbi/received_data_en
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {10000 ps} 0}
-quietly wave cursor active 1
-configure wave -namecolwidth 80
-configure wave -valuecolwidth 40
+configure wave -namecolwidth 120
+configure wave -valuecolwidth 80
 configure wave -justifyvalue left
-configure wave -signalnamewidth 0
-configure wave -snapdistance 10
-configure wave -datasetprefix 0
-configure wave -rowmargin 4
-configure wave -childrowmargin 2
-configure wave -gridoffset 0
-configure wave -gridperiod 1
-configure wave -griddelta 40
-configure wave -timeline 0
-configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {120 ns}

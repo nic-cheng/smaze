@@ -1,9 +1,11 @@
 module kb_demo(CLOCK_50, reset, PS2_CLK, PS2_DAT, LEDR);
     input wire CLOCK_50, reset;
     inout wire PS2_CLK, PS2_DAT;
-    output wire [4:0] LEDR; // moving, W, A, S, D
+    output wire [9:0] LEDR; // moving, W, A, S, D
+    
+    assign LEDR[9:5] = 5'b10000;
 
-    reg [1:0] direction;
+    wire [1:0] direction;
 
     kb_interface kbi (
         .CLOCK_50   (CLOCK_50),

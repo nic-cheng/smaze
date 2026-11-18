@@ -32,7 +32,8 @@ module kb_interface(CLOCK_50, reset, PS2_CLK, PS2_DAT, moving, direction);
             if (received_data == BREAK) break_code_received <= 1;
             else begin
                 if (!break_code_received) begin
-                    if (received_data inside {KEY_W, KEY_A, KEY_S, KEY_D})
+                    if (received_data == KEY_W || received_data == KEY_A ||
+                        received_data == KEY_S || received_data == KEY_D)
                         moving <= 1'b1;
                     case (received_data)
                         KEY_W: direction <= 2'd0;

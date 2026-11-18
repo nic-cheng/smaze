@@ -1,0 +1,194 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/intelFPGA_lite/18.1/ece241/smaze/keyboard/sim
+vAltera_UP_PS2_Command_Out
+Z1 !s110 1795032281
+!i10b 1
+!s100 ZjDIV:z^W4aE7ECD]ReVK0
+IW06GlC0io2zlcg6SW;__O2
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+R0
+Z3 w1795030297
+8../PS2_Controller/Altera_UP_PS2_Command_Out.v
+F../PS2_Controller/Altera_UP_PS2_Command_Out.v
+Z4 L0 10
+Z5 OV;L;10.5b;63
+r1
+!s85 0
+31
+Z6 !s108 1795032281.000000
+Z7 !s107 ../PS2_Controller/PS2_Controller.v|../PS2_Controller/Altera_UP_PS2_Data_In.v|../PS2_Controller/Altera_UP_PS2_Command_Out.v|
+Z8 !s90 ../PS2_Controller/Altera_UP_PS2_Command_Out.v|../PS2_Controller/Altera_UP_PS2_Data_In.v|../PS2_Controller/PS2_Controller.v|
+!i113 1
+Z9 tCvgOpt 0
+n@altera_@u@p_@p@s2_@command_@out
+vAltera_UP_PS2_Data_In
+R1
+!i10b 1
+!s100 ee^TmQcGZ[E_>UMojW[Zg0
+IVJig>E>mDah2HF[4BTlE?1
+R2
+R0
+R3
+8../PS2_Controller/Altera_UP_PS2_Data_In.v
+F../PS2_Controller/Altera_UP_PS2_Data_In.v
+R4
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+R9
+n@altera_@u@p_@p@s2_@data_@in
+vkb_demo
+R1
+!i10b 1
+!s100 hO6[PNEWc]3>1go0WSeeD0
+IRZf[5<Y]YZ3GNPECB7kn<2
+R2
+R0
+w1795032278
+8../kb_demo.v
+F../kb_demo.v
+L0 1
+R5
+r1
+!s85 0
+31
+R6
+Z10 !s107 ../top.v|../kb_interface.v|../kb_demo.v|
+Z11 !s90 ../kb_demo.v|../kb_interface.v|../top.v|
+!i113 1
+R9
+vkb_interface
+R1
+!i10b 1
+!s100 =bgWaP5WZZjgk<QhkU8Ne1
+I5HCkdnF6k2`LngSbmiz^33
+R2
+R0
+w1795031611
+8../kb_interface.v
+F../kb_interface.v
+L0 1
+R5
+r1
+!s85 0
+31
+R6
+R10
+R11
+!i113 1
+R9
+vps2_clk_dat
+R1
+!i10b 1
+!s100 ;QPlBDZSY5KOR4JUT2gD_3
+I25iniZj@6==ZAR`dZY@OE0
+R2
+R0
+Z12 w1790744650
+Z13 8../tb/PS2_keyboard.v
+Z14 F../tb/PS2_keyboard.v
+L0 125
+R5
+r1
+!s85 0
+31
+R6
+Z15 !s107 ../tb/tb.v|../tb/PS2_keyboard.v|
+Z16 !s90 ../tb/PS2_keyboard.v|../tb/tb.v|
+!i113 1
+R9
+vPS2_Controller
+R1
+!i10b 1
+!s100 ShKJh1QDFbWkm2JJ<TUE[0
+I<`_2On5:TlMKF>S;0]iTJ0
+R2
+R0
+w1795031910
+8../PS2_Controller/PS2_Controller.v
+F../PS2_Controller/PS2_Controller.v
+L0 9
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+R9
+n@p@s2_@controller
+vPS2_keyboard
+R1
+!i10b 1
+!s100 SONZ;kR0o]8_XVQ9jP3ez3
+IX6`fRkl9<E2:dE@>JBM<_1
+R2
+R0
+R12
+R13
+R14
+L0 16
+R5
+r1
+!s85 0
+31
+R6
+R15
+R16
+!i113 1
+R9
+n@p@s2_keyboard
+vtb
+R1
+!i10b 1
+!s100 mcFD6NEYI?EDC`=74<4kN2
+I3K^@Qh16PUT[loA[V=F_G2
+R2
+R0
+R12
+8../tb/tb.v
+F../tb/tb.v
+L0 9
+R5
+r1
+!s85 0
+31
+R6
+R15
+R16
+!i113 1
+R9
+vtop
+R1
+!i10b 1
+!s100 Yz]iLoSDAbE[]e^<0o?ea1
+I3_5efzDN?j>mO^LNUg7F=1
+R2
+R0
+w1795031123
+8../top.v
+F../top.v
+L0 7
+R5
+r1
+!s85 0
+31
+R6
+R10
+R11
+!i113 1
+R9

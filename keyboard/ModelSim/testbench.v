@@ -20,16 +20,22 @@ module testbench;
     PS2_keyboard Keyboard (CLOCK_50, KEY[0], key_action, scan_code,
                            PS2_CLK, PS2_DAT);
 
+    always @(posedge CLOCK_50)
+        if (DUT.kbi.received_data_en)
+            $display("RX scan code %02h at %0t ns",
+                     DUT.kbi.received_data, $time);
+
     task send_scan_code;
         input [7:0] code;
         begin
             @(negedge CLOCK_50);
             scan_code = code;
             key_action = 1'b1;
+            $display("TX scan code %02h at %0t ns", code, $time);
             @(negedge CLOCK_50);
             key_action = 1'b0;
             // The model serializes each byte over the PS/2 wires.
-            #5000;
+            #20000;
         end
     endtask
 

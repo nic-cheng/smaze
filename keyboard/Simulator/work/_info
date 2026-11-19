@@ -1,0 +1,206 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/intelFPGA_lite/18.1/ece241/smaze/keyboard/simulator
+vAltera_UP_PS2_Command_Out
+Z1 !s110 1795085484
+!i10b 1
+!s100 ZjDIV:z^W4aE7ECD]ReVK0
+IQ2b;WPP^=L^2Vld11A5T@3
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+R0
+Z3 w1795030297
+8C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/PS2_Controller/Altera_UP_PS2_Command_Out.v
+FC:/intelFPGA_lite/18.1/ece241/smaze/keyboard/PS2_Controller/Altera_UP_PS2_Command_Out.v
+Z4 L0 10
+Z5 OV;L;10.5b;63
+r1
+!s85 0
+31
+Z6 !s108 1795085484.000000
+Z7 !s107 C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/top.v|C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/kb_demo.v|C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/kb_interface.v|C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/PS2_Controller/PS2_Controller.v|C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/PS2_Controller/Altera_UP_PS2_Command_Out.v|C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/PS2_Controller/Altera_UP_PS2_Data_In.v|C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/tb/PS2_keyboard.v|
+Z8 !s90 -reportprogress|300|-work|work|C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/tb/PS2_keyboard.v|C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/PS2_Controller/Altera_UP_PS2_Data_In.v|C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/PS2_Controller/Altera_UP_PS2_Command_Out.v|C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/PS2_Controller/PS2_Controller.v|C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/kb_interface.v|C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/kb_demo.v|C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/top.v|
+!i113 1
+Z9 o-work work
+Z10 tCvgOpt 0
+n@altera_@u@p_@p@s2_@command_@out
+vAltera_UP_PS2_Data_In
+R1
+!i10b 1
+!s100 ee^TmQcGZ[E_>UMojW[Zg0
+I]W`J6>5Re6ecCWcj6foll1
+R2
+R0
+R3
+8C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/PS2_Controller/Altera_UP_PS2_Data_In.v
+FC:/intelFPGA_lite/18.1/ece241/smaze/keyboard/PS2_Controller/Altera_UP_PS2_Data_In.v
+R4
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+R9
+R10
+n@altera_@u@p_@p@s2_@data_@in
+vkb_demo
+R1
+!i10b 1
+!s100 88ifRfTHMM>T]lKW93zK23
+IPK5Wk5He8:oi`M:9AQT2l2
+R2
+R0
+w1795034448
+8C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/kb_demo.v
+FC:/intelFPGA_lite/18.1/ece241/smaze/keyboard/kb_demo.v
+L0 1
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+R9
+R10
+vkb_interface
+R1
+!i10b 1
+!s100 UAQWXb5fTW@:^o??hbSj@2
+IYYzA?YURjHLLkWj3@LhBA2
+R2
+R0
+w1795034351
+8C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/kb_interface.v
+FC:/intelFPGA_lite/18.1/ece241/smaze/keyboard/kb_interface.v
+L0 1
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+R9
+R10
+vps2_clk_dat
+R1
+!i10b 1
+!s100 ;QPlBDZSY5KOR4JUT2gD_3
+IkS9<FZ_LA8O;`n_EFW59_2
+R2
+R0
+Z11 w1790744650
+Z12 8C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/tb/PS2_keyboard.v
+Z13 FC:/intelFPGA_lite/18.1/ece241/smaze/keyboard/tb/PS2_keyboard.v
+L0 125
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+R9
+R10
+vPS2_Controller
+R1
+!i10b 1
+!s100 ShKJh1QDFbWkm2JJ<TUE[0
+IoX]<kF_=ffh1kRG^Km;[n0
+R2
+R0
+w1795031910
+8C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/PS2_Controller/PS2_Controller.v
+FC:/intelFPGA_lite/18.1/ece241/smaze/keyboard/PS2_Controller/PS2_Controller.v
+L0 9
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+R9
+R10
+n@p@s2_@controller
+vPS2_keyboard
+R1
+!i10b 1
+!s100 SONZ;kR0o]8_XVQ9jP3ez3
+I?:_RioG;ac0Y@P8<1VbzU0
+R2
+R0
+R11
+R12
+R13
+L0 16
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+R9
+R10
+n@p@s2_keyboard
+vtestbench
+DXx6 sv_std 3 std 0 22 AD7iAPLo6nTIKk<N0eo=D3
+R1
+!i10b 1
+!s100 L5_?79afS`PT6Wmm[<3BS2
+IoZaI9?o<?gnZ1<9kNW@m<1
+R2
+!s105 testbench_v_unit
+S1
+R0
+w1795039952
+8C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/Simulator/testbench.v
+FC:/intelFPGA_lite/18.1/ece241/smaze/keyboard/Simulator/testbench.v
+L0 4
+R5
+r1
+!s85 0
+31
+R6
+!s107 C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/Simulator/testbench.v|
+!s90 -reportprogress|300|-sv|-work|work|C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/Simulator/testbench.v|
+!i113 1
+o-sv -work work
+R10
+vtop
+R1
+!i10b 1
+!s100 Yz]iLoSDAbE[]e^<0o?ea1
+IOJWCfNj_8f7?E_Gzc`TPD1
+R2
+R0
+w1795031123
+8C:/intelFPGA_lite/18.1/ece241/smaze/keyboard/top.v
+FC:/intelFPGA_lite/18.1/ece241/smaze/keyboard/top.v
+L0 7
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+R9
+R10

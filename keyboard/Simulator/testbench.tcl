@@ -1,16 +1,38 @@
-# stop any simulation that is currently running
+# Run "do testbench.tcl" from keyboard/Simulator or
+# "do keyboard/Simulator/testbench.tcl" from the project root.
+# ModelSim's "do" does not set Tcl's script filename like "source" does.
+set script_path [info script]
+if {[file tail $script_path] eq "testbench.tcl"} {
+    set simulator_dir [file dirname [file normalize $script_path]]
+} elseif {[file isfile [file join [pwd] .. tb PS2_keyboard.v]]} {
+    set simulator_dir [pwd]
+} else {
+    set simulator_dir [file join [pwd] keyboard Simulator]
+}
+set keyboard_dir [file dirname $simulator_dir]
+if {![file isfile [file join $keyboard_dir tb PS2_keyboard.v]]} {
+    error "Keyboard sources not found. Run from keyboard/Simulator or the project root."
+}
+
 quit -sim
+if {![file isdirectory work]} {
+    vlib work
+}
 
-# create the default "work" library
-vlib work;
+vlog -work work [file join $keyboard_dir tb PS2_keyboard.v] \
+    [file join $keyboard_dir PS2_Controller Altera_UP_PS2_Data_In.v] \
+    [file join $keyboard_dir PS2_Controller Altera_UP_PS2_Command_Out.v] \
+    [file join $keyboard_dir PS2_Controller PS2_Controller.v] \
+    [file join $keyboard_dir kb_interface.v] \
+    [file join $keyboard_dir kb_demo.v] \
+    [file join $keyboard_dir top.v]
+vlog -sv -work work [file join $simulator_dir testbench.v]
 
-# compile the needed Verilog code in the tb folder
-vlog ../tb/PS2_keyboard.v
-# compile the testbench
-vlog testbench.v
-# start the Simulator, including some libraries that may be needed
-vsim -voptargs=+acc work.testbench -Lf 220model -Lf altera_mf_ver -Lf verilog
-# show waveforms specified in wave.do
-do wave.do
-# advance the simulation the desired amount of time
-run 5000 ns
+vsim -t 1ns -voptargs=+acc -onfinish stop work.testbench
+if {![batch_mode]} {
+    do [file join $simulator_dir wave.do]
+}
+run -all
+if {[examine -radix unsigned sim:/testbench/passed] ne "1"} {
+    error "PS/2 keyboard movement checks failed"
+}

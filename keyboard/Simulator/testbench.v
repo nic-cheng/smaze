@@ -3,13 +3,13 @@
 
 module testbench;
     parameter CLOCK_PERIOD = 20;
-    localparam [7:0] W = 8'h1D, A = 8'h1C, S = 8'h1B, D = 8'h23;
-    localparam [7:0] BREAK = 8'hF0, SPACE = 8'h29;
-    localparam [4:0] STOPPED = 5'b0_0001,
-                     MOVING_UP = 5'b1_0001,
-                     MOVING_LEFT = 5'b1_0010,
-                     MOVING_DOWN = 5'b1_0100,
-                     MOVING_RIGHT = 5'b1_1000;
+    parameter [7:0] BREAK = 8'hF0, W = 8'h1D, A = 8'h1C, S = 8'h1B, D = 8'h23;
+    parameter [7:0] SPACE = 8'h29; // arbitrary key
+    parameter [4:0] STOPPED =       5'b0_0001,
+                    MOVING_UP =     5'b1_0001,
+                    MOVING_LEFT =   5'b1_0010,
+                    MOVING_DOWN =   5'b1_0100,
+                    MOVING_RIGHT =  5'b1_1000;
 
     reg CLOCK_50 = 1'b0;
     reg [3:0] KEY = 4'b1110;
@@ -21,15 +21,14 @@ module testbench;
 
     always #(CLOCK_PERIOD / 2) CLOCK_50 = ~CLOCK_50;
 
-    // The FPGAcademy keyboard model serializes each scan code onto the PS/2 bus.
+    // FPGAcademy keyboard module 
     PS2_keyboard keyboard (
         .Clock(CLOCK_50), .Resetn(KEY[0]),
         .key_action(key_action), .scan_code(scan_code),
         .ps2_clk(ps2_clk), .ps2_dat(keyboard_dat)
     );
 
-    // The model advances data on each PS/2 rising edge. Hold the current bit
-    // through the receiver's rising-edge sample and settle before the next fall.
+    // Timing fix (sample after rising edge write)
     assign #(CLOCK_PERIOD + CLOCK_PERIOD / 2) ps2_dat = keyboard_dat;
 
     top dut (
@@ -41,6 +40,7 @@ module testbench;
     wire received_data_en = dut.U1.kbi.received_data_en;
     wire [7:0] received_data = dut.U1.kbi.received_data;
 
+    // Confirm if LEDR is in the exact expected state
     task check_leds;
         input [4:0] expected;
         begin
@@ -50,6 +50,7 @@ module testbench;
         end
     endtask
 
+    // Simulate a keyboard input and verify LEDs change to expected output
     task send_and_check;
         input [7:0] code;
         input [4:0] expected;
@@ -62,7 +63,7 @@ module testbench;
             key_action = 1'b0;
 
             // Confirm delivery even when the byte should leave the LEDs unchanged.
-            // A frame takes about 70 board clocks in the keyboard model.
+            // ~70 CLOCK_ in the keyboard model.
             cycles = 0;
             while (received_data_en !== 1'b1 && cycles < 100) begin
                 @(negedge CLOCK_50);

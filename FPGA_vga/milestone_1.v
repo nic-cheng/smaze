@@ -1,7 +1,6 @@
 /* 
  * The code uses a "VGA adapter" to send pixel colors to the VGA window.
- *  First, press KEY[0] to reset the circuit. It will display the contents of a video memory
- *  in the VGA adapter as a background image. Then, the maze will be rendered onto the screen. 
+ *  The maze will be rendered onto the screen once compiled and ran. 
   * Make sure to set the resolution to 320x240.
 */
 module milestone_1(CLOCK_50, SW, KEY, LEDR, HEX2, HEX1, HEX0, VGA_R, VGA_G, VGA_B,
@@ -57,7 +56,7 @@ module milestone_1(CLOCK_50, SW, KEY, LEDR, HEX2, HEX1, HEX0, VGA_R, VGA_G, VGA_
 
 endmodule
 
-//NEW: create maze, scan for 0s and 1s and tell the vga adapter what to draw
+//NEW: create maze, tell the vga adapter what colour to draw at each pixel
 module maze_draw(clock, resetn, start, x, y, colour, write, done);
     input wire clock, resetn, start;
     output reg [8:0] x;
@@ -87,29 +86,33 @@ module maze_draw(clock, resetn, start, x, y, colour, write, done);
 //        maze[14] = 20'b11111_11111_11111_11111; 
 //    end
 
-	reg [19:0] maze_rows;
+	reg [19:0] maze_row;
+
+    wire [3:0] row = y[7:4];
+    wire [4:0] col = x[8:4]; //drop bottom four bits to scale it
 
     always @(*) begin
     case (row)
-        4'b0000: maze_rows = 20'b11111_11111_11111_11111;
-        4'b0001: maze_rows = 20'b10000_00001_11111_00000;
-        4'b0010: maze_rows = 20'b10111_11101_11111_01111;
-        4'b0011: maze_rows = 20'b10100_00101_00000_01001;
-        4'b0100: maze_rows = 20'b11101_01101_01111_11011;
-        4'b0101: maze_rows = 20'b10001_01000_01000_00011;
-        4'b0110: maze_rows = 20'b10111_11101_11101_11111;
-        4'b0111: maze_rows = 20'b10000_00001_01001_00000;
-        4'b1000: maze_rows = 20'b11111_11011_01111_01111;
-        4'b1001: maze_rows = 20'b10000_01011_00000_01001;
-        4'b1010: maze_rows = 20'b10110_01011_11110_11011;
-        4'b1011: maze_rows = 20'b10111_01000_00010_00001;
-        4'b1100: maze_rows = 20'b10000_01111_10111_11101;
-        4'b1101: maze_rows = 20'b11111_00000_00000_00001;
-        4'b1110: maze_rows = 20'b11111_11111_11111_11111;
-        default: maze_rows = 20'b11111_11111_11111_11111;
+        4'b0000: maze_row = 20'b11111_11111_11111_11111;
+        4'b0001: maze_row = 20'b10000_00001_11111_00000;
+        4'b0010: maze_row = 20'b10111_11101_11111_01111;
+        4'b0011: maze_row = 20'b10100_00101_00000_01001;
+        4'b0100: maze_row = 20'b11101_01101_01111_11011;
+        4'b0101: maze_row = 20'b10001_01000_01000_00011;
+        4'b0110: maze_row = 20'b10111_11101_11101_11111;
+        4'b0111: maze_row = 20'b10000_00001_01001_00000;
+        4'b1000: maze_row = 20'b11111_11011_01111_01111;
+        4'b1001: maze_row = 20'b10000_01011_00000_01001;
+        4'b1010: maze_row = 20'b10110_01011_11110_11011;
+        4'b1011: maze_row = 20'b10111_01000_00010_00001;
+        4'b1100: maze_row = 20'b10000_01111_10111_11101;
+        4'b1101: maze_row = 20'b11111_00000_00000_00001;
+        4'b1110: maze_row = 20'b11111_11111_11111_11111;
+        default: maze_row = 20'b11111_11111_11111_11111;
     endcase
     end
 
+    //move forward each pixel
     always @ (posedge clock)
     begin
         if (resetn == 1'b0)
@@ -135,10 +138,7 @@ module maze_draw(clock, resetn, start, x, y, colour, write, done);
         end
     end
 
-    wire [3:0] row = y[7:4];
-    wire [4:0] col = x[8:4]; //drop bottom four bits to scale it
-
-    wire wall = maze_rows[19-col];
+    wire wall = maze_row[19-col];
     assign colour = (wall) ? 9'b000_000_000: 9'b 111_111_111;
     //assign colour = (row[0] ^ col[0]) ? 9'b111_111_111 : 9'b000_000_000; //test
     assign write = start & ~done;

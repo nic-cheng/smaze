@@ -29,9 +29,7 @@ module milestone_1(CLOCK_50, SW, KEY, LEDR, HEX2, HEX1, HEX0, VGA_X, VGA_Y, VGA_
 	output wire [23:0] VGA_COLOR;        // for DESim VGA
 	output wire plot;                    // for DESim VGA
 
-    wire VGA_SYNC;  // used to indicate when background drawing is done
-
-    // set default color to white (1...11)
+    wire VGA_SYNC;  // used as start
 
     //added
     wire resetn = KEY[0];
@@ -107,7 +105,7 @@ module maze_draw(clock, resetn, start, x, y, colour, write, done);
         maze[14] = 20'b11111_11111_11111_11111; 
     end
 
-
+    //always block to tell the vga adapter where to draw and what
     always @ (posedge clock)
     begin
         if (resetn == 1'b0)

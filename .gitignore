@@ -1,7 +1,6 @@
 ./DS_Store
 /output_files
-*.qsf
-!DE1_SoC.qsf
+quartus
 *.qws
 c5_pin_model_dump.txt
 db

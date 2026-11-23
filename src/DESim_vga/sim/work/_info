@@ -7,38 +7,58 @@ z2
 !i10e 25
 !i10f 100
 cModel Technology
-Z0 dD:/University/Year 2/ece241/final_project/smaze/DESim_vga/sim
-vmaze_draw
-Z1 !s110 1795035585
+Z0 dD:/University/Year 2/ece241/final_project/smaze/src/DESim_vga/sim
+vmaze
+Z1 !s110 1795442149
 !i10b 1
-!s100 TnYd<ciN=kVXfQfc0kYN52
-Ik2DijM:R9YdigT>hUID=U0
+!s100 UUkH2l2R9Rd]9OV=NL3Dm1
+ITRfF^ZUKCBQf6ozBT:;l:0
 Z2 VDg1SIo80bB@j0V0VzS_@n1
 R0
-Z3 w1795034390
-Z4 8../milestone_1.v
-Z5 F../milestone_1.v
-L0 81
+Z3 w1795441972
+Z4 8../vga_demo.v
+Z5 F../vga_demo.v
+L0 88
 Z6 OV;L;10.5b;63
 r1
 !s85 0
 31
-Z7 !s108 1795035585.000000
-Z8 !s107 ../vga_adapter/vga_controller.v|../vga_adapter/vga_address_translator.v|../vga_adapter/vga_adapter.v|../top.v|../milestone_1.v|
-Z9 !s90 ../milestone_1.v|../top.v|../vga_adapter/vga_adapter.v|../vga_adapter/vga_address_translator.v|../vga_adapter/vga_controller.v|
+Z7 !s108 1795442149.000000
+Z8 !s107 ../vga_adapter/vga_controller.v|../vga_adapter/vga_address_translator.v|../vga_adapter/vga_adapter.v|../vga_demo.v|../top.v|
+Z9 !s90 ../top.v|../vga_demo.v|../vga_adapter/vga_adapter.v|../vga_adapter/vga_address_translator.v|../vga_adapter/vga_controller.v|
 !i113 1
 Z10 tCvgOpt 0
-vmilestone_1
+vmaze_draw
 R1
 !i10b 1
-!s100 _c`3lKAOEg`O:;[^8AB:60
-I4ej:zgRMFTBTe`M[In1[R1
+!s100 0;RH>NgkNc7z5Cc@WbCzS3
+IaVfW]c4nVV]8chGR]@3lG3
 R2
 R0
 R3
 R4
 R5
-L0 9
+L0 121
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+vobject
+R1
+!i10b 1
+!s100 a3=G>bIcZk@?VmVz7<OcW3
+IY`9J2PL=`hEVIJ7jLM94E2
+R2
+R0
+R3
+R4
+R5
+L0 205
 R6
 r1
 !s85 0
@@ -55,7 +75,7 @@ R1
 I>4gBVN2Yd729jFEF1:MKn1
 R2
 R0
-R3
+Z11 w1795203359
 8../tb/tb.v
 F../tb/tb.v
 L0 6
@@ -68,14 +88,35 @@ R7
 !s90 ../tb/tb.v|
 !i113 1
 R10
-vtop
+vToggleFF
 R1
 !i10b 1
-!s100 _3WYK7kB6Aj<5_MajadEj3
-I?`cmJ]oQTX97J]0GAV2_h3
+!s100 4U`[F3jRn:dd89kR2Qdh33
+IhQll724oo2dDU[IHUCUkj2
 R2
 R0
 R3
+R4
+R5
+L0 161
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+n@toggle@f@f
+vtop
+R1
+!i10b 1
+!s100 8D@cUOV`bjPAS8>bH2I7m3
+IHamhC6Kd4BF:]Qh8<BgZD0
+R2
+R0
+w1795442141
 8../top.v
 F../top.v
 L0 1
@@ -88,6 +129,48 @@ R8
 R9
 !i113 1
 R10
+vUp_count
+R1
+!i10b 1
+!s100 keGZbZ39bd16D17?_o0no1
+IX?51S_@d5L8l1bba?QPle1
+R2
+R0
+R3
+R4
+R5
+L0 192
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+n@up_count
+vUpDn_count
+R1
+!i10b 1
+!s100 oN;PUh[O1XloiZ:N@j@ga0
+I4:P86]gl=<2fU^l5@R3Gi3
+R2
+R0
+R3
+R4
+R5
+L0 173
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+n@up@dn_count
 vvga_adapter
 R1
 !i10b 1
@@ -95,9 +178,9 @@ R1
 IWIz^cb<19KE1>eSC9>3D11
 R2
 R0
-R3
-Z11 8../vga_adapter/vga_adapter.v
-Z12 F../vga_adapter/vga_adapter.v
+R11
+Z12 8../vga_adapter/vga_adapter.v
+Z13 F../vga_adapter/vga_adapter.v
 L0 13
 R6
 r1
@@ -115,7 +198,7 @@ R1
 IQf6bgg416;`z;57fofQV23
 R2
 R0
-R3
+R11
 8../vga_adapter/vga_address_translator.v
 F../vga_adapter/vga_address_translator.v
 L0 4
@@ -135,7 +218,7 @@ R1
 IjhYa6S9;BCQ0R>55aGh7N3
 R2
 R0
-R3
+R11
 8../vga_adapter/vga_controller.v
 F../vga_adapter/vga_controller.v
 L0 5
@@ -155,10 +238,30 @@ R1
 I5FKT<Y<ScFXYS_hd;@<QG2
 R2
 R0
-R3
 R11
 R12
+R13
 L0 170
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+vvga_demo
+R1
+!i10b 1
+!s100 K<`mahRORDE;z6<<0ShGm2
+IemZA^K_i26GP`kCOi2oTL1
+R2
+R0
+R3
+R4
+R5
+L0 9
 R6
 r1
 !s85 0
@@ -175,9 +278,9 @@ R1
 IR]T]CWYeeRn;489g^`m:h3
 R2
 R0
-R3
 R11
 R12
+R13
 L0 154
 R6
 r1

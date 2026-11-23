@@ -33,7 +33,7 @@ module testbench ( );
         $stop;
 	end // initial
 
-	milestone_1 U1 (CLOCK_50, SW, KEY, LEDR, HEX2, HEX1, HEX0, VGA_X, VGA_Y, VGA_COLOR, plot);
+	vga_demo U1 (CLOCK_50, SW, KEY, LEDR, HEX2, HEX1, HEX0, VGA_X, VGA_Y, VGA_COLOR, plot);
         defparam U1.RESOLUTION = RESOLUTION;
 
 endmodule

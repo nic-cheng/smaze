@@ -1,6 +1,6 @@
 module top (CLOCK_50, SW, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, LEDR, VGA_X, VGA_Y, VGA_COLOR, plot);
 
-    input wire CLOCK_50;             // DE-series 50 MHz clock signal
+    input CLOCK_50;             // DE-series 50 MHz clock signal
     input wire [9:0] SW;        // DE-series switches
     input wire [3:0] KEY;       // DE-series pushbuttons
 
@@ -22,9 +22,7 @@ module top (CLOCK_50, SW, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, LEDR, VGA_X, 
     parameter COLOR_DEPTH = 9; // Can be set to 9, 6, or 3
     // VGA x bitwidth
     parameter n = (RESOLUTION == "640x480") ? 10 : ((RESOLUTION == "320x240") ? 9 : 8);
-
-    milestone_1 U1 (CLOCK_50, SW, KEY, LEDR, HEX2, HEX1, HEX0, 
-                 VGA_X[n-1:0], VGA_Y[n-2:0], VGA_COLOR, plot);
+    vga_demo U1 (CLOCK_50, SW, KEY, LEDR, VGA_X[n-1:0], VGA_Y[n-2:0], VGA_COLOR, plot);
         defparam U1.RESOLUTION = RESOLUTION;
         defparam U1.COLOR_DEPTH = COLOR_DEPTH;
 

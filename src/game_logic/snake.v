@@ -1,8 +1,7 @@
-// pos 40 / 30
+// pos 40 x 30
 // 6 bit x 5 bit
-module snake (game_clk, resetn, enable, maze, start_pos, direction, pos_list);
+module snake (game_clk, resetn, enable, start_pos, direction, pos_list);
     input wire game_clk, resetn, enable;
-    input wire [1199:0] maze;
     input wire [32:0] start_pos;
     input wire [1:0] direction;
     output reg [32:0] pos_list; // [32:22] head, [21:11] mid, [10:0] tail
@@ -26,12 +25,13 @@ module snake (game_clk, resetn, enable, maze, start_pos, direction, pos_list);
             default:    next_pos = head_pos; // Shouldn't be possible
         endcase
     end
-
-    // Check for walls
+    
+    // Instantiate maze and check for walls
     wire [5:0] next_x = next_pos[10:5];
     wire [4:0] next_y = next_pos[4:0];
-    wire [10:0] maze_idx = (next_y * 11'd40) + {5'd0, next_x};
-    wire can_move = !maze[maze_idx];
+    wire wall;
+    maze m (next_pos[10:5], next_pos[4:0], wall);
+    wire can_move = !wall;
 
     // Shift if enabled and not running into a wall
     always @(posedge game_clk) begin

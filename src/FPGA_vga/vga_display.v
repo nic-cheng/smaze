@@ -22,8 +22,8 @@ module vga_display(CLOCK_50, KEY, pos_list, spacebar, VGA_R, VGA_G, VGA_B,
 
     wire resetn = KEY[0];
 
-    wire [8:0] x;
-    wire [7:0] y;
+    wire [7:0] x;
+    wire [6:0] y;
     wire [4:0] row;
     wire wall, write;
 
@@ -32,13 +32,13 @@ module vga_display(CLOCK_50, KEY, pos_list, spacebar, VGA_R, VGA_G, VGA_B,
     wire [39:0] start_data;
     starter b1(CLOCK_50, spacebar, resetn, row, game, start_data);
 
-    wire lit = start_data[39 - x[8:3]];   // delayed x lines up with the ROM output
+    wire lit = start_data[39 - x[7:2]];   // delayed x lines up with the ROM output
 
     wire snake;
     snake_draw s1(x, y, pos_list, snake);
 
     wire [8:0] final_color = ~game ? (lit ? 9'b101_000_111 : 9'b000_000_000) :
-                             snake ? 9'b111_101_110 :
+                             snake ? 9'b101_000_111 :
                              wall  ? 9'b000_000_000 : 9'b111_111_111;
 
     vga_adapter VGA (
@@ -56,7 +56,7 @@ module vga_display(CLOCK_50, KEY, pos_list, spacebar, VGA_R, VGA_G, VGA_B,
         .VGA_BLANK_N(VGA_BLANK_N),
         .VGA_SYNC_N(VGA_SYNC_N),
         .VGA_CLK(VGA_CLK));
-        defparam VGA.RESOLUTION = "320x240";
+        defparam VGA.RESOLUTION = "160x120";
 
 endmodule
 
@@ -93,34 +93,34 @@ endmodule
 //create maze, tell the vga adapter what colour to draw at each pixel
 module maze_draw(clock, resetn, x, y, row, wall, write);
     input wire clock, resetn;
-    output reg [8:0] x;
-    output reg [7:0] y;
+    output reg [7:0] x;
+    output reg [6:0] y;
     output wire [4:0] row;       // pre-delay row for the ROM addresses
     output wire wall;
     output reg write;
 
-    reg [8:0] x_;
-    reg [7:0] y_;
+    reg [7:0] x_;
+    reg [6:0] y_;
 
-    assign row = y_[7:3];
+    assign row = y_[6:2];
 
     wire [39:0] row_data;
     maze_rom rom1(clock, row, row_data);
 
-    assign wall = row_data[39 - x[8:3]];
+    assign wall = row_data[39 - x[7:2]];
 
     always @ (posedge clock)
     begin
         if (resetn == 1'b0)
         begin
-            x_ <= 9'b0;
-            y_ <= 8'b0;
+            x_ <= 8'b0;
+            y_ <= 7'b0;
         end
-        else if (x_ == 9'd319)
+        else if (x_ == 8'd159)
         begin
-            x_ <= 9'b0;
-            if (y_ == 8'd239)
-                y_ <= 8'b0;
+            x_ <= 8'b0;
+            if (y_ == 7'd119)
+                y_ <= 7'b0;
             else
                 y_ <= y_ + 1'b1;
         end
@@ -132,8 +132,8 @@ module maze_draw(clock, resetn, x, y, row, wall, write);
     begin
         if (resetn == 1'b0)
         begin
-            x <= 9'b0;
-            y <= 8'b0;
+            x <= 8'b0;
+            y <= 7'b0;
             write <= 1'b0;
         end
         else
@@ -161,13 +161,13 @@ endmodule
 
 //draw snake based on inputs
 module snake_draw(x, y, pos_list, snake);
-    input [8:0] x;
-    input [7:0] y;
+    input [7:0] x;
+    input [6:0] y;
     input [32:0] pos_list; // [32:22] head, [21:11] mid, [10:0] tail, out of that - [10:5] x, [4:0] y
     output snake;
 
-    wire [4:0] row = y[7:3];
-    wire [5:0] col = x[8:3]; //drop bottom three bits to scale it
+    wire [4:0] row = y[6:2];
+    wire [5:0] col = x[7:2]; //drop bottom three bits to scale it
     wire [10:0] block = {col, row};
 
     assign snake = (block == pos_list[32:22]) | (block == pos_list[21:11]) | (block == pos_list[10:0]);

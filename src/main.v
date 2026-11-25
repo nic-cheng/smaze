@@ -8,7 +8,8 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_R, VGA_G, VGA_B, VGA
     inout wire PS2_CLK;
     inout wire PS2_DAT;
 
-    wire [1:0] start_dir, kb_dir, snake_dir;
+    wire [1:0] kb_dir, snake_dir;
+    wire [1:0] start_dir = 1'd3;
     wire moving, spacebar;
 
     output wire [7:0] VGA_R, VGA_G, VGA_B;

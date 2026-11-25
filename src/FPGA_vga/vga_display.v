@@ -53,7 +53,6 @@ module vga_display(CLOCK_50, KEY, pos_list, spacebar, VGA_R, VGA_G, VGA_B,
 
     wire [8:0] star_color;
     star_rom s (
-        .clock   (CLOCK_50),
         .address (star_addr),
         .Q       (star_color)
     );
@@ -102,7 +101,7 @@ module starter(clock, space, resetn, row, y_Q, start_data);
     end
 
     start_rom start1 (
-        .clock   (CLOCK_50),
+        .clock   (clock),
         .address (row),
         .Q       (start_data)
     );

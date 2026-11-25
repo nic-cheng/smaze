@@ -47,7 +47,7 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_R, VGA_G, VGA_B, VGA
 
     snake s (
         .clock      (CLOCK_50),
-        .resetn     (KEY[0]),
+        .resetn     (KEY[0] & ~spacebar),
         .move_enable(snake_enable),
         .enable     (moving),
         .start_pos  (start_pos),

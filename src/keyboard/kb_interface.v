@@ -45,7 +45,10 @@ module kb_interface(CLOCK_50, resetn, PS2_CLK, PS2_DAT, snake_dir, moving, kb_di
                         KEY_A: if (snake_dir != D_RIGHT) kb_dir <= 2'd1;
                         KEY_S: if (snake_dir != D_UP)    kb_dir <= 2'd2;
                         KEY_D: if (snake_dir != D_LEFT)  kb_dir <= 2'd3;
-                        KEY_SPACE: spacebar <= 1'b1;
+                        KEY_SPACE: begin
+                            spacebar <= 1'b1;
+                            moving <= 1'b0;
+                        end
                         default: ;
                     endcase
                 end

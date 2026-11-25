@@ -3,15 +3,14 @@
  *  The maze will be rendered onto the screen once compiled and ran. 
   * Make sure to set the resolution to 320x240.
 */
-module vga_display(CLOCK_50, KEY, direction, pos_list, spacebar, VGA_R, VGA_G, VGA_B,
-                VGA_HS, VGA_VS, VGA_BLANK_N, VGA_SYNC_N, VGA_CLK);
+module vga_display(CLOCK_50, KEY, pos_list, spacebar, VGA_R, VGA_G, VGA_B,
+                VGA_HS, VGA_VS, VGA_BLANK_N, VGA_SYNC_N, VGA_CLK, game);
 
-	input wire CLOCK_50;	
-	input wire [3:0] KEY;
-    input wire [1:0] direction;
+    input wire CLOCK_50;
+    input wire [3:0] KEY;
     input wire [32:0] pos_list;
-    input wire spacebar;
-	output wire [7:0] VGA_R;
+    input wire spacebar;            // active-high: 1 = pressed
+    output wire [7:0] VGA_R;
     output wire [7:0] VGA_G;
     output wire [7:0] VGA_B;
     output wire VGA_HS;
@@ -19,32 +18,28 @@ module vga_display(CLOCK_50, KEY, direction, pos_list, spacebar, VGA_R, VGA_G, V
     output wire VGA_BLANK_N;
     output wire VGA_SYNC_N;
     output wire VGA_CLK;
+    output wire game; // 1 = game running
 
     wire resetn = KEY[0];
-    wire game;
-    wire [39:0] start_data;
-    starter b1(CLOCK_50, ~spacebar, resetn, game, start_data);
-
-    wire lit = start_data[39-x[8:3]] ? 9'b111_101_110 : 9'b111_111_111;
 
     wire [8:0] x;
     wire [7:0] y;
-    wire done;
-    wire [8:0] color;
-    wire write;
+    wire [4:0] row;
+    wire wall, write;
 
-    maze_draw m1(CLOCK_50, resetn, game, x, y, color, write, done);
+    maze_draw m1(CLOCK_50, resetn, x, y, row, wall, write);
 
-    wire tick;
+    wire [39:0] start_data;
+    starter b1(CLOCK_50, spacebar, resetn, row, game, start_data);
 
-    clock_counter c1(CLOCK_50, resetn, tick);
-    // snake_move sm1(CLOCK_50, resetn, direction, tick, pos_list);
-    
+    wire lit = start_data[39 - x[8:3]];   // delayed x lines up with the ROM output
+
     wire snake;
-
     snake_draw s1(x, y, pos_list, snake);
 
-    wire [8:0] final_color = game ? (snake ? 9'b111_101_110 : color) : lit;
+    wire [8:0] final_color = ~game ? (lit ? 9'b101_000_111 : 9'b000_000_000) :
+                             snake ? 9'b111_101_110 :
+                             wall  ? 9'b000_000_000 : 9'b111_111_111;
 
     vga_adapter VGA (
         .resetn(KEY[0]),
@@ -65,12 +60,13 @@ module vga_display(CLOCK_50, KEY, direction, pos_list, spacebar, VGA_R, VGA_G, V
 
 endmodule
 
-module starter(clock, space, resetn, y_Q, start_data);
+module starter(clock, space, resetn, row, y_Q, start_data);
     input clock, space, resetn;
+    input [4:0] row;
     output reg y_Q;
-    output [39:0] start_data; //per row
+    output [39:0] start_data;    // one row of the title screen
 
-    wire y_D = space | y_Q;   // once set, it stays set until reset
+    wire y_D = space | y_Q;      // once set, stays set until reset
 
     always @ (posedge clock)
     begin
@@ -95,54 +91,41 @@ module start_rom(clock, address, Q);
 endmodule
 
 //create maze, tell the vga adapter what colour to draw at each pixel
-module maze_draw(clock, resetn, start, x, y, color, write, done);
-    input wire clock, resetn, start;
+module maze_draw(clock, resetn, x, y, row, wall, write);
+    input wire clock, resetn;
     output reg [8:0] x;
     output reg [7:0] y;
-    output reg done;
-    output wire [8:0] color;
+    output wire [4:0] row;       // pre-delay row for the ROM addresses
+    output wire wall;
     output reg write;
 
-    // pixel counters (run ahead of the actual outputs by one clock)
     reg [8:0] x_;
     reg [7:0] y_;
 
-    wire [4:0] row = y_[7:3];
-    wire [5:0] col = x_[8:3]; //drop bottom three bits to scale it
+    assign row = y_[7:3];
 
     wire [39:0] row_data;
-    maze_rom rom1(clock, row, row_data);   // address is just the row
+    maze_rom rom1(clock, row, row_data);
 
-    wire wall = row_data[39 - x[8:3]];     // leftmost character in the mif = column 0
+    assign wall = row_data[39 - x[8:3]];
 
-    //move forward each pixel
     always @ (posedge clock)
     begin
         if (resetn == 1'b0)
         begin
             x_ <= 9'b0;
             y_ <= 8'b0;
-            done <= 1'b0;
         end
-        else if (start & ~done)
+        else if (x_ == 9'd319)
         begin
-            if (x_ == 9'd319)
-            begin
-                if (y_ == 8'd239)
-                begin
-                    //change for milestone 2 - restart drawing to update
-                    x_ <= 9'b0;
-                    y_ <= 8'b0;
-                end
-                else
-                begin
-                    x_ <= 9'b0;
-                    y_ <= y_ + 1'b1;
-                end
-            end
+            x_ <= 9'b0;
+            if (y_ == 8'd239)
+                y_ <= 8'b0;
             else
-                x_ <= x_ + 1'b1;
+                y_ <= y_ + 1'b1;
         end
+        else
+            x_ <= x_ + 1'b1;
     end
 
     always @(posedge clock)
@@ -157,12 +140,9 @@ module maze_draw(clock, resetn, start, x, y, color, write, done);
         begin
             x <= x_;
             y <= y_;
-            write <= start & ~done;
+            write <= 1'b1;
         end
     end
-
-    assign color = (wall) ? 9'b000_000_000: 9'b 111_111_111;
-
 endmodule
 
 //loads the mif file

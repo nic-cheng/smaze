@@ -1,29 +1,29 @@
-module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_X, VGA_Y, VGA_COLOR, plot);
+module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_R, VGA_G, VGA_B, VGA_HS, VGA_VS, VGA_BLANK_N, VGA_SYNC_N, VGA_CLK);
     input wire CLOCK_50;
     input wire [9:0] SW;
     input wire [3:0] KEY;
 
     output wire [9:0] LEDR;
+    assign LEDR = 10'b0;
     inout wire PS2_CLK;
     inout wire PS2_DAT;
-
-    output wire [9:0] VGA_X;
-    output wire [8:0] VGA_Y;
-    output wire [23:0] VGA_COLOR;
-    output wire plot;
 
     wire [1:0] start_dir, kb_dir, snake_dir;
     wire moving, spacebar;
 
-    wire [8:0] x;
-    wire [7:0] y;
-    output wire write, final_color;
     output wire [7:0] VGA_R, VGA_G, VGA_B;
     output wire VGA_HS;
     output wire VGA_VS;
     output wire VGA_BLANK_N;
     output wire VGA_SYNC_N;
     output wire VGA_CLK;
+
+    wire game, tick;
+    clock_counter cc (CLOCK_50, KEY[0], tick);
+    wire game_clk = tick & game;
+
+    wire [32:0] start_pos;
+    wire [32:0] pos_list;
 
     kb_interface kbi (
         .CLOCK_50   (CLOCK_50),
@@ -49,8 +49,7 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_X, VGA_Y, VGA_COLOR,
 
     vga_display vga(
         .CLOCK_50   (CLOCK_50),
-        .key        (KEY[1:0]),
-        .direction  (direction),
+        .KEY        (KEY),
         .pos_list   (pos_list),
         .spacebar   (spacebar),
         .VGA_R      (VGA_R),
@@ -60,23 +59,8 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_X, VGA_Y, VGA_COLOR,
         .VGA_VS     (VGA_VS),
         .VGA_BLANK_N    (VGA_BLANK_N),
         .VGA_SYNC_N     (VGA_SYNC_N),
-        .VGA_CLK        (VGA_CLK)
-    );
-
-    vga_display vga(
-        .CLOCK_50   (CLOCK_50),
-        .key        (KEY[1:0]),
-        .direction  (direction),
-        .pos_list   (pos_list),
-        .spacebar   (spacebar),
-        .VGA_R      (VGA_R),
-        .VGA_G      (VGA_G),
-        .VGA_B      (VGA_B),
-        .VGA_HS     (VGA_HS),
-        .VGA_VS     (VGA_VS),
-        .VGA_BLANK_N    (VGA_BLANK_N),
-        .VGA_SYNC_N     (VGA_SYNC_N),
-        .VGA_CLK        (VGA_CLK)
+        .VGA_CLK        (VGA_CLK),
+        .game           (game)
     );
 
 endmodule

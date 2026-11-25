@@ -3,13 +3,14 @@
  *  The maze will be rendered onto the screen once compiled and ran. 
   * Make sure to set the resolution to 320x240.
 */
-module vga_display(CLOCK_50, SW, KEY, LEDR, HEX2, HEX1, HEX0, VGA_R, VGA_G, VGA_B,
+module vga_display(CLOCK_50, KEY, direction, pos_list, spacebar, VGA_R, VGA_G, VGA_B,
                 VGA_HS, VGA_VS, VGA_BLANK_N, VGA_SYNC_N, VGA_CLK);
 
 	input wire CLOCK_50;	
-	input wire [9:0] SW;
 	input wire [3:0] KEY;
-    output wire [6:0] HEX2, HEX1, HEX0;
+    input wire [1:0] direction;
+    input wire [32:0] pos_list;
+    input wire spacebar;
 	output wire [7:0] VGA_R;
     output wire [7:0] VGA_G;
     output wire [7:0] VGA_B;
@@ -19,19 +20,13 @@ module vga_display(CLOCK_50, SW, KEY, LEDR, HEX2, HEX1, HEX0, VGA_R, VGA_G, VGA_
     output wire VGA_SYNC_N;
     output wire VGA_CLK;
 
-    output wire [9:0] LEDR;
-    assign LEDR = 10'b0;
-    assign HEX2 = 7'b111_1111;
-    assign HEX1 = 7'b111_1111;
-    assign HEX0 = 7'b111_1111;
-
-    // wire start = KEY[1]; //replace with space
-    // wire y_D, game;
-    // begin b1(start, y_D, game);
-
-    wire game = 1'b1;
-
     wire resetn = KEY[0];
+    wire game;
+    wire [39:0] start_data;
+    starter b1(CLOCK_50, ~spacebar, resetn, game, start_data);
+
+    wire lit = start_data[39-x[8:3]] ? 9'b111_101_110 : 9'b111_111_111;
+
     wire [8:0] x;
     wire [7:0] y;
     wire done;
@@ -40,18 +35,16 @@ module vga_display(CLOCK_50, SW, KEY, LEDR, HEX2, HEX1, HEX0, VGA_R, VGA_G, VGA_
 
     maze_draw m1(CLOCK_50, resetn, game, x, y, color, write, done);
 
-        wire [1:0] direction = SW[1:0];
     wire tick;
-    wire [32:0] pos_list;
 
     clock_counter c1(CLOCK_50, resetn, tick);
-    snake_move sm1(CLOCK_50, resetn, direction, tick, pos_list);
+    // snake_move sm1(CLOCK_50, resetn, direction, tick, pos_list);
     
     wire snake;
 
     snake_draw s1(x, y, pos_list, snake);
 
-    wire [8:0] final_color = snake ? 9'b111_101_110 : color;
+    wire [8:0] final_color = game ? (snake ? 9'b111_101_110 : color) : lit;
 
     vga_adapter VGA (
         .resetn(KEY[0]),
@@ -72,38 +65,34 @@ module vga_display(CLOCK_50, SW, KEY, LEDR, HEX2, HEX1, HEX0, VGA_R, VGA_G, VGA_
 
 endmodule
 
-// module begin(start, y_D, game);
-//     input start; //replace with space
-//     reg y_D;
-//     output reg game;
+module starter(clock, space, resetn, y_Q, start_data);
+    input clock, space, resetn;
+    output reg y_Q;
+    output [39:0] start_data; //per row
 
-//     always @(*)
-//     case (start)
-//         default: y_D = 1'b0;
-//         1'b0: y_D = 1'b0;
-//         1'b1: y_D = 1'b1;
-//     endcase
+    wire y_D = space | y_Q;   // once set, it stays set until reset
 
-//     always @ (posedge CLOCK_50)
+    always @ (posedge clock)
+    begin
+        if (resetn == 1'b0)
+            y_Q <= 1'b0;
+        else
+            y_Q <= y_D;
+    end
 
-//     wire [4:0] row = y_[7:3];
-//     wire [5:0] col = x_[8:3]; //drop bottom three bits to scale it
+    start_rom rom1(clock, row, start_data);
+endmodule
 
-//     wire [39:0] row_data;
+module start_rom(clock, address, Q);
+    input wire clock;
+    input wire [4:0] address;
+    output reg [39:0] Q;
 
-//     start_rom rom1(CLOCK_50, row, row_data);
-// endmodule
+    (* ram_init_file = "start.mif" *) reg [39:0] memory [0:29];
 
-// module start_rom(clock, address, Q);
-//     input wire clock;
-//     input wire [4:0] address;
-//     output reg [39:0] Q;
-
-//     (* ram_init_file = "start.mif" *) reg [39:0] memory [0:29];
-
-//     always @(posedge clock)
-//         Q <= memory[address];
-// endmodule
+    always @(posedge clock)
+        Q <= memory[address];
+endmodule
 
 //create maze, tell the vga adapter what colour to draw at each pixel
 module maze_draw(clock, resetn, start, x, y, color, write, done);
@@ -206,37 +195,37 @@ module snake_draw(x, y, pos_list, snake);
 endmodule
 
 //snake moving logic 
-module snake_move(clock, resetn, direction, tick, pos_list);
-    input clock, resetn;
-    input [1:0] direction;
-    input tick;
-    output [32:0] pos_list; // [32:22] head, [21:11] mid, [10:0] tail
+// module snake_move(clock, resetn, direction, tick, pos_list);
+//     input clock, resetn;
+//     input [1:0] direction;
+//     input tick;
+//     output [32:0] pos_list; // [32:22] head, [21:11] mid, [10:0] tail
 
-    reg [10:0] head, mid, tail; //each {x[5:0], y[4:0]}
+//     reg [10:0] head, mid, tail; //each {x[5:0], y[4:0]}
 
-    always @ (posedge clock)
-    begin
-        if (resetn == 1'b0)
-        begin
-            head <= {6'd3, 5'd1};
-            mid  <= {6'd2, 5'd1};
-            tail <= {6'd1, 5'd1};
-        end
-        else if (tick == 1'b1)
-        begin
-            tail <= mid;
-            mid  <= head;
-            case (direction)
-                2'b00: head <= {head[10:5] + 1'b1, head[4:0]}; //right
-                2'b01: head <= {head[10:5] - 1'b1, head[4:0]}; //left
-                2'b10: head <= {head[10:5], head[4:0] - 1'b1}; //up
-                2'b11: head <= {head[10:5], head[4:0] + 1'b1}; //down
-            endcase
-        end
-    end
+//     always @ (posedge clock)
+//     begin
+//         if (resetn == 1'b0)
+//         begin
+//             head <= {6'd3, 5'd1};
+//             mid  <= {6'd2, 5'd1};
+//             tail <= {6'd1, 5'd1};
+//         end
+//         else if (tick == 1'b1)
+//         begin
+//             tail <= mid;
+//             mid  <= head;
+//             case (direction)
+//                 2'b00: head <= {head[10:5] + 1'b1, head[4:0]}; //right
+//                 2'b01: head <= {head[10:5] - 1'b1, head[4:0]}; //left
+//                 2'b10: head <= {head[10:5], head[4:0] - 1'b1}; //up
+//                 2'b11: head <= {head[10:5], head[4:0] + 1'b1}; //down
+//             endcase
+//         end
+//     end
 
-    assign pos_list = {head, mid, tail};
-endmodule
+//     assign pos_list = {head, mid, tail};
+// endmodule
 
 module clock_counter(Clk, resetn, tick); //big counter
 

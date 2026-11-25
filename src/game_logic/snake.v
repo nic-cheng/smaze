@@ -19,9 +19,9 @@ module snake (game_clk, resetn, enable, start_pos, start_dir, kb_dir, pos_list, 
     // Out of bounds handled by walls
     always @(*) begin
         case (kb_dir)
-            D_UP:       next_pos = {head_x       , head_y - 5'b1}; // Assuming it's like array math in C, check VGA implem
+            D_UP:       next_pos = {head_x       , head_y + 5'b1};
             D_LEFT:     next_pos = {head_x - 6'b1, head_y       };
-            D_DOWN:     next_pos = {head_x       , head_y + 5'b1};
+            D_DOWN:     next_pos = {head_x       , head_y - 5'b1};
             D_RIGHT:    next_pos = {head_x + 6'b1, head_y       };
             default:    next_pos = head_pos; // Shouldn't be possible
         endcase
@@ -30,9 +30,9 @@ module snake (game_clk, resetn, enable, start_pos, start_dir, kb_dir, pos_list, 
     // Instantiate maze and check for walls
     wire [5:0] next_x = next_pos[10:5];
     wire [4:0] next_y = next_pos[4:0];
-    wire wall;
-    maze_rom m (next_pos[10:5], next_pos[4:0], wall);
-    wire can_move = !wall;
+    wire [39:0] row;
+    maze_rom m (next_y, row);
+    wire can_move = !row[39 - next_x];
 
     // Shift if enabled and not running into a wall
     always @(posedge game_clk) begin

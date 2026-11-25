@@ -105,7 +105,7 @@ module maze_draw(clock, resetn, x, y, row, wall, write);
     assign row = y_[6:2];
 
     wire [39:0] row_data;
-    maze_rom rom1(clock, row, row_data);
+    maze_rom rom1(row, row_data);
 
     assign wall = row_data[39 - x[7:2]];
 
@@ -146,17 +146,15 @@ module maze_draw(clock, resetn, x, y, row, wall, write);
 endmodule
 
 //loads the mif file
-module maze_rom(clock, address, Q);
-    input wire clock;
+module maze_rom(address, Q);
     input wire [4:0] address;
-    output reg [39:0] Q;
+    output wire [39:0] Q;
 
     (* ram_init_file = "maze1.mif" *) reg [39:0] memory [0:29];
 
     // initial $readmemb("maze1.txt", memory); // modelsim only
 
-    always @(posedge clock)
-        Q <= memory[address];
+    assign Q = memory[address];
 endmodule
 
 //draw snake based on inputs

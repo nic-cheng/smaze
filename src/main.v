@@ -9,7 +9,7 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_R, VGA_G, VGA_B, VGA
     inout wire PS2_DAT;
 
     wire [1:0] kb_dir, snake_dir;
-    wire [1:0] start_dir = 1'd3;
+    wire [1:0] start_dir = 2'd3;
     wire moving, spacebar;
 
     output wire [7:0] VGA_R, VGA_G, VGA_B;
@@ -49,15 +49,15 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_R, VGA_G, VGA_B, VGA
     );
 
     vga_display vga(
-        .CLOCK_50   (CLOCK_50),
-        .KEY        (KEY),
-        .pos_list   (pos_list),
-        .spacebar   (spacebar),
-        .VGA_R      (VGA_R),
-        .VGA_G      (VGA_G),
-        .VGA_B      (VGA_B),
-        .VGA_HS     (VGA_HS),
-        .VGA_VS     (VGA_VS),
+        .CLOCK_50       (CLOCK_50),
+        .KEY            (KEY),
+        .pos_list       (pos_list),
+        .spacebar       (spacebar),
+        .VGA_R          (VGA_R),
+        .VGA_G          (VGA_G),
+        .VGA_B          (VGA_B),
+        .VGA_HS         (VGA_HS),
+        .VGA_VS         (VGA_VS),
         .VGA_BLANK_N    (VGA_BLANK_N),
         .VGA_SYNC_N     (VGA_SYNC_N),
         .VGA_CLK        (VGA_CLK),

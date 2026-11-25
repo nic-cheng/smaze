@@ -31,7 +31,7 @@ module snake (game_clk, resetn, enable, start_pos, start_dir, kb_dir, pos_list, 
     wire [5:0] next_x = next_pos[10:5];
     wire [4:0] next_y = next_pos[4:0];
     wire wall;
-    maze m (next_pos[10:5], next_pos[4:0], wall);
+    maze_rom m (next_pos[10:5], next_pos[4:0], wall);
     wire can_move = !wall;
 
     // Shift if enabled and not running into a wall

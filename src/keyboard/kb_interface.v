@@ -1,7 +1,7 @@
 module kb_interface(CLOCK_50, resetn, PS2_CLK, PS2_DAT, snake_dir, moving, kb_dir, spacebar);
     input wire CLOCK_50, resetn;
     inout wire PS2_CLK, PS2_DAT;
-    input [1:0] wire snake_dir; // the snake's actual movement direction from snake module
+    input wire [1:0] snake_dir; // the snake's actual movement direction from snake module
     output reg moving; // should the snake move?
     output reg [1:0] kb_dir; // up, left, down, right (WASD order)
     output reg spacebar; // One CLOCK_50 tick pulse when spacebar is pressed (ignores release)

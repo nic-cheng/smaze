@@ -99,15 +99,13 @@ module maze_draw(clock, resetn, x, y, row, row_data, wall, write);
     input wire clock, resetn;
     output reg [7:0] x;
     output reg [6:0] y;
-    output wire [4:0] row;       // pre-delay row for the ROM addresses
+    output reg [4:0] row;        // row aligned with registered x/y
     input wire [39:0] row_data;
     output wire wall;
     output reg write;
 
     reg [7:0] x_;
     reg [6:0] y_;
-
-    assign row = y_[6:2];
 
     assign wall = row_data[39 - x[7:2]];
 
@@ -136,12 +134,14 @@ module maze_draw(clock, resetn, x, y, row, row_data, wall, write);
         begin
             x <= 8'b0;
             y <= 7'b0;
+            row <= 5'b0;
             write <= 1'b0;
         end
         else
         begin
             x <= x_;
             y <= y_;
+            row <= y_[6:2];
             write <= 1'b1;
         end
     end
@@ -219,17 +219,15 @@ module clock_counter(Clk, resetn, tick); //big counter
     reg [23:0] Q; //24 bits fits 10,000,000
     output reg tick;
 
-    always @ (*)
-    begin
+    always @ (*) begin
         if (Q == 24'd9_999_999)
             tick = 1'b1;
         else
             tick = 1'b0;
     end
 
-    always @ (posedge Clk)
-    begin
-        if (resetn == 1'b0 || tick)
+    always @(posedge Clk or negedge resetn) begin
+        if (tick || !resetn)
             Q <= 24'b0;
         else
             Q <= Q + 1'b1;

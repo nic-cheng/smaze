@@ -1,8 +1,8 @@
 // pos 40 x 30
 // 6 bit x 5 bit
-module snake (game_clk, resetn, enable, start_pos, start_dir, kb_dir,
+module snake (clock, resetn, move_enable, enable, start_pos, start_dir, kb_dir,
               maze_row, maze_address, pos_list, snake_dir);
-    input wire game_clk, resetn, enable;
+    input wire clock, resetn, move_enable, enable;
     input wire [32:0] start_pos;
     input wire [1:0] start_dir, kb_dir;
     input wire [39:0] maze_row;
@@ -36,12 +36,12 @@ module snake (game_clk, resetn, enable, start_pos, start_dir, kb_dir,
     wire can_move = !maze_row[39 - next_x];
 
     // Shift if enabled and not running into a wall
-    always @(posedge game_clk) begin
+    always @(posedge clock) begin
         if (!resetn) begin
             pos_list <= start_pos;
             snake_dir <= start_dir;
         end
-        else if (enable && can_move) begin
+        else if (move_enable && enable && can_move) begin
             pos_list <= {next_pos, pos_list[32:11]};
             snake_dir <= kb_dir;
         end

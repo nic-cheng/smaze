@@ -21,7 +21,7 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_R, VGA_G, VGA_B, VGA
 
     wire game, tick;
     clock_counter cc (CLOCK_50, KEY[0], tick);
-    wire game_clk = tick & game;
+    wire snake_enable = tick & game;
 
     wire [32:0] start_pos;
     wire [10:0] end_pos;
@@ -50,8 +50,9 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_R, VGA_G, VGA_B, VGA
     );
 
     snake s (
-        .game_clk   (game_clk),
+        .clock      (CLOCK_50),
         .resetn     (KEY[0]),
+        .move_enable(snake_enable),
         .enable     (moving),
         .start_pos  (start_pos),
         .start_dir  (start_dir),

@@ -1,8 +1,9 @@
-module kb_interface(CLOCK_50, resetn, PS2_CLK, PS2_DAT, moving, direction);
+module kb_interface(CLOCK_50, resetn, PS2_CLK, PS2_DAT, moving, direction, spacebar);
     input wire CLOCK_50, resetn;
     inout wire PS2_CLK, PS2_DAT;
     output reg moving; // should the snake move?
     output reg [1:0] direction; // up, left, down, right (WASD order)
+    output reg spacebar;
 
     wire [7:0] received_data;
     wire received_data_en;
@@ -21,7 +22,7 @@ module kb_interface(CLOCK_50, resetn, PS2_CLK, PS2_DAT, moving, direction);
         .received_data_en                   (received_data_en)
     );
 
-    parameter [7:0] BREAK = 8'hF0, KEY_W = 8'h1D, KEY_A = 8'h1C, KEY_S = 8'h1B, KEY_D = 8'h23;
+    parameter [7:0] BREAK = 8'hF0, KEY_W = 8'h1D, KEY_A = 8'h1C, KEY_S = 8'h1B, KEY_D = 8'h23, KEY_SPACE = 8'h29;
 
     always @(posedge CLOCK_50) begin
         if (!resetn) begin
@@ -30,6 +31,8 @@ module kb_interface(CLOCK_50, resetn, PS2_CLK, PS2_DAT, moving, direction);
             break_code_received <= 1'b0;
         end
         else if (received_data_en) begin
+            spacebar <= 1'b0;
+
             if (received_data == BREAK) break_code_received <= 1;
             else begin
                 if (!break_code_received) begin
@@ -41,6 +44,7 @@ module kb_interface(CLOCK_50, resetn, PS2_CLK, PS2_DAT, moving, direction);
                         KEY_A: direction <= 2'd1;
                         KEY_S: direction <= 2'd2;
                         KEY_D: direction <= 2'd3;
+                        KEY_SPACE: spacebar <= 1'b1;
                         default: ;
                     endcase
                 end

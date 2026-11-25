@@ -27,9 +27,16 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_R, VGA_G, VGA_B, VGA
     wire [10:0] end_pos;
     wire [32:0] pos_list;
 
-    maze_metadata_rom metadata (
-        .start_pos (start_pos),
-        .end_pos   (end_pos)
+    wire [4:0] snake_maze_address, vga_maze_address;
+    wire [39:0] snake_maze_row, vga_maze_row;
+
+    maze_rom maze (
+        .vga_address   (vga_maze_address),
+        .snake_address (snake_maze_address),
+        .vga_row       (vga_maze_row),
+        .snake_row     (snake_maze_row),
+        .start_pos     (start_pos),
+        .end_pos       (end_pos)
     );
 
     kb_interface kbi (
@@ -50,6 +57,8 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_R, VGA_G, VGA_B, VGA
         .start_pos  (start_pos),
         .start_dir  (start_dir),
         .kb_dir     (kb_dir),
+        .maze_row   (snake_maze_row),
+        .maze_address(snake_maze_address),
         .pos_list   (pos_list),
         .snake_dir  (snake_dir)
     );
@@ -59,6 +68,8 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_R, VGA_G, VGA_B, VGA
         .KEY            (KEY),
         .pos_list       (pos_list),
         .spacebar       (spacebar),
+        .maze_row_data  (vga_maze_row),
+        .maze_address   (vga_maze_address),
         .VGA_R          (VGA_R),
         .VGA_G          (VGA_G),
         .VGA_B          (VGA_B),

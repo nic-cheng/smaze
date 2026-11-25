@@ -3,13 +3,15 @@
  *  The maze will be rendered onto the screen once compiled and ran. 
   * Make sure to set the resolution to 320x240.
 */
-module vga_display(CLOCK_50, KEY, pos_list, spacebar, VGA_R, VGA_G, VGA_B,
+module vga_display(CLOCK_50, KEY, pos_list, spacebar, maze_row_data, maze_address, VGA_R, VGA_G, VGA_B,
                 VGA_HS, VGA_VS, VGA_BLANK_N, VGA_SYNC_N, VGA_CLK, game);
 
     input wire CLOCK_50;
     input wire [3:0] KEY;
     input wire [32:0] pos_list;
     input wire spacebar;            // active-high: 1 = pressed
+    input wire [39:0] maze_row_data;
+    output wire [4:0] maze_address;
     output wire [7:0] VGA_R;
     output wire [7:0] VGA_G;
     output wire [7:0] VGA_B;
@@ -27,7 +29,8 @@ module vga_display(CLOCK_50, KEY, pos_list, spacebar, VGA_R, VGA_G, VGA_B,
     wire [4:0] row;
     wire wall, write;
 
-    maze_draw m1(CLOCK_50, resetn, x, y, row, wall, write);
+    maze_draw m1(CLOCK_50, resetn, x, y, row, maze_row_data, wall, write);
+    assign maze_address = row;
 
     wire [39:0] start_data;
     starter b1(CLOCK_50, spacebar, resetn, row, game, start_data);
@@ -91,11 +94,12 @@ module start_rom(clock, address, Q);
 endmodule
 
 //create maze, tell the vga adapter what colour to draw at each pixel
-module maze_draw(clock, resetn, x, y, row, wall, write);
+module maze_draw(clock, resetn, x, y, row, row_data, wall, write);
     input wire clock, resetn;
     output reg [7:0] x;
     output reg [6:0] y;
     output wire [4:0] row;       // pre-delay row for the ROM addresses
+    input wire [39:0] row_data;
     output wire wall;
     output reg write;
 
@@ -103,9 +107,6 @@ module maze_draw(clock, resetn, x, y, row, wall, write);
     reg [6:0] y_;
 
     assign row = y_[6:2];
-
-    wire [39:0] row_data;
-    maze_rom rom1(row, row_data);
 
     assign wall = row_data[39 - x[7:2]];
 
@@ -145,17 +146,22 @@ module maze_draw(clock, resetn, x, y, row, wall, write);
     end
 endmodule
 
-//loads the mif file
-module maze_rom(address, Q);
-    input wire [4:0] address;
-    output wire [39:0] Q;
+// One MIF-backed ROM serves maze rendering, collision checks, and metadata.
+module maze_rom(vga_address, snake_address, vga_row, snake_row, start_pos, end_pos);
+    input wire [4:0] vga_address, snake_address;
+    output wire [39:0] vga_row, snake_row;
+    output wire [32:0] start_pos;
+    output wire [10:0] end_pos;
 
     // Addresses 0-29 are maze rows; 30-33 store start head/mid/tail and exit.
     (* ram_init_file = "maze2.mif" *) reg [39:0] memory [0:33];
 
     // initial $readmemb("maze1.txt", memory); // modelsim only
 
-    assign Q = memory[address];
+    assign vga_row = memory[vga_address];
+    assign snake_row = memory[snake_address];
+    assign start_pos = {memory[30][10:0], memory[31][10:0], memory[32][10:0]};
+    assign end_pos = memory[33][10:0];
 endmodule
 
 //draw snake based on inputs

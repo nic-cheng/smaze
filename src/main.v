@@ -71,7 +71,6 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_R, VGA_G, VGA_B, VGA
         .VGA_SYNC_N     (VGA_SYNC_N),
         .VGA_CLK        (VGA_CLK),
         .game           (game),
-        .end_pos        (end_pos)
+        .end_pos        ({11'b10011100010})
     );
-
 endmodule

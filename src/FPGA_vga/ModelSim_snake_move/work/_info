@@ -1,0 +1,157 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dD:/University/Year 2/ece241/final_project/smaze/src/FPGA_vga/ModelSim_snake_move
+vclock_counter
+Z1 !s110 1795575936
+!i10b 1
+!s100 LZ@KZk@mXX;YcIc2CW7_51
+I_5W05iZn?Fgid5F_WO1n60
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+R0
+Z3 w1795573969
+Z4 8../vga_display.v
+Z5 F../vga_display.v
+L0 205
+Z6 OV;L;10.5b;63
+r1
+!s85 0
+31
+Z7 !s108 1795575936.000000
+Z8 !s107 ../vga_display.v|
+Z9 !s90 -reportprogress|300|-nolock|../vga_display.v|
+!i113 1
+Z10 o-nolock
+Z11 tCvgOpt 0
+vmaze_draw
+R1
+!i10b 1
+!s100 3;S^=A3GUJUeCc[^_gUlc3
+IY28jnhfJGKk02?12RBSYf3
+R2
+R0
+R3
+R4
+R5
+L0 73
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vmaze_rom
+R1
+!i10b 1
+!s100 YSz7=d?dP:I99o8MX7@4f1
+Ia37enl[fPSYfM6WhjkC223
+R2
+R0
+R3
+R4
+R5
+L0 144
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vsnake_draw
+R1
+!i10b 1
+!s100 070Hz9E>cKcak4ZSeZQH=2
+ITT8<9h1iaZ6?D^dKn=dLn0
+R2
+R0
+R3
+R4
+R5
+L0 158
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vsnake_move
+R1
+!i10b 1
+!s100 8HKJ0GA0IgD]X?Z0HmEl91
+I=:QZNCda=^NJ_aEZdlK5=0
+R2
+R0
+R3
+R4
+R5
+L0 173
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11
+vtb_snake_move
+R1
+!i10b 1
+!s100 O07NRPYgbzXVf4gH:=amm2
+IhmGX`Kb9_DWeP5d_jZmH:2
+R2
+R0
+w1795575875
+8tb_snake_move.v
+Ftb_snake_move.v
+L0 3
+R6
+r1
+!s85 0
+31
+R7
+!s107 tb_snake_move.v|
+!s90 -reportprogress|300|-nolock|tb_snake_move.v|
+!i113 1
+R10
+R11
+vvga_display
+R1
+!i10b 1
+!s100 ?Hn633AnEQb=6S>AKc^[V2
+I2]5jed<I@KncDR^fGK21U3
+R2
+R0
+R3
+R4
+R5
+L0 6
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11

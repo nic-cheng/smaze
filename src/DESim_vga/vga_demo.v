@@ -205,6 +205,9 @@ endmodule
 module object (Resetn, Clock, gnt, direction, wall, new_col, new_row, req,  
                VGA_x, VGA_y, VGA_color, VGA_write);
 
+    //output reg [32:0] pos_list; // [32:22] head, [21:11] mid, [10:0] tail
+    //reg [10:0] position;  // [10:5] x, [4:0] y
+
     parameter nX = 9;
     parameter nY = 8;
     parameter COLOR_DEPTH = 9;

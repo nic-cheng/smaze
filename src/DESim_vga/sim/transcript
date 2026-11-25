@@ -1,5 +1,5 @@
 # vsim -pli "D:\Downloads\DESim\modelsim.vpi" -Lf 220model -Lf altera_mf_ver -Lf verilog -t 1ns -c -do "run -all" tb 
-# Start time: 08:55:52 on Nov 23,2026
+# Start time: 16:08:46 on Nov 23,2026
 # Loading work.tb
 # Loading work.top
 # Loading work.vga_demo
@@ -30,9 +30,3 @@
 # ** Warning: (vsim-7) Failed to open readmem file "background.ver" in read mode.
 # No such file or directory. (errno = ENOENT)    : /build/swbuild/SJ/nightly/18.1std/625/l64/work/modelsim/eda/sim_lib/altera_mf.v(48976)
 #    Time: 0 ns  Iteration: 0  Instance: /tb/DUT/U1/VGA/VideoMemory/m_default/altsyncram_inst
-# ** Note: $finish    : /build/swbuild/SJ/nightly/18.1std/625/l64/work/modelsim/eda/sim_lib/altera_mf.v(48976)
-#    Time: 87245 us  Iteration: 1  Instance: /tb
-# 
-# Quitting...
-# End time: 08:56:27 on Nov 23,2026, Elapsed time: 0:00:35
-# Errors: 0, Warnings: 2

@@ -9,7 +9,7 @@ z2
 cModel Technology
 Z0 dD:/University/Year 2/ece241/final_project/smaze/src/DESim_vga/sim
 vmaze
-Z1 !s110 1795442149
+Z1 !s110 1795468109
 !i10b 1
 !s100 UUkH2l2R9Rd]9OV=NL3Dm1
 ITRfF^ZUKCBQf6ozBT:;l:0
@@ -23,7 +23,7 @@ Z6 OV;L;10.5b;63
 r1
 !s85 0
 31
-Z7 !s108 1795442149.000000
+Z7 !s108 1795468109.000000
 Z8 !s107 ../vga_adapter/vga_controller.v|../vga_adapter/vga_address_translator.v|../vga_adapter/vga_adapter.v|../vga_demo.v|../top.v|
 Z9 !s90 ../top.v|../vga_demo.v|../vga_adapter/vga_adapter.v|../vga_adapter/vga_address_translator.v|../vga_adapter/vga_controller.v|
 !i113 1

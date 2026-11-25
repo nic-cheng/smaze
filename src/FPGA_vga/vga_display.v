@@ -220,7 +220,7 @@ module clock_counter(Clk, resetn, tick); //big counter
     output reg tick;
 
     always @ (*) begin
-        if (Q == 24'd9_999_999)
+        if (Q == 24'd4_999_999)
             tick = 1'b1;
         else
             tick = 1'b0;

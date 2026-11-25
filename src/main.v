@@ -32,7 +32,7 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_R, VGA_G, VGA_B, VGA
         .end_pos        (end_pos)
     );
 
-    assign LEDR = {2'b10, start_pos[7:0]};
+    assign LEDR = 10'b0;
 
     kb_interface kbi (
         .CLOCK_50   (CLOCK_50),
@@ -70,7 +70,8 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_R, VGA_G, VGA_B, VGA
         .VGA_BLANK_N    (VGA_BLANK_N),
         .VGA_SYNC_N     (VGA_SYNC_N),
         .VGA_CLK        (VGA_CLK),
-        .game           (game)
+        .game           (game),
+        .end_pos        (end_pos)
     );
 
 endmodule

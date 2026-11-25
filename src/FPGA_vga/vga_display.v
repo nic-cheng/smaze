@@ -4,7 +4,7 @@
   * Make sure to set the resolution to 320x240.
 */
 module vga_display(CLOCK_50, KEY, pos_list, spacebar, VGA_R, VGA_G, VGA_B,
-                VGA_HS, VGA_VS, VGA_BLANK_N, VGA_SYNC_N, VGA_CLK, game);
+                VGA_HS, VGA_VS, VGA_BLANK_N, VGA_SYNC_N, VGA_CLK, game, end_pos);
 
     input wire CLOCK_50;
     input wire [3:0] KEY;
@@ -19,6 +19,7 @@ module vga_display(CLOCK_50, KEY, pos_list, spacebar, VGA_R, VGA_G, VGA_B,
     output wire VGA_SYNC_N;
     output wire VGA_CLK;
     output wire game; // 1 = game running
+    input wire [10:0] end_pos;
 
     wire resetn = KEY[0];
 
@@ -41,8 +42,8 @@ module vga_display(CLOCK_50, KEY, pos_list, spacebar, VGA_R, VGA_G, VGA_B,
     //STAR MIF
 
     //position
-    wire [5:0] star_col = 6'd20;
-    wire [4:0] star_row = 5'd15;
+    wire [5:0] star_col = end_pos[10:5];
+    wire [4:0] star_row = end_pos[4:0];
 
     wire in_star_tile = (x[7:2] == star_col) && (y[6:2] == star_row);
 

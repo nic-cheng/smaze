@@ -29,17 +29,41 @@ module vga_display(CLOCK_50, KEY, pos_list, spacebar, VGA_R, VGA_G, VGA_B,
 
     maze_draw m1(CLOCK_50, resetn, x, y, row, wall, write);
 
+    //START SCREEN MIF
     wire [39:0] start_data;
     starter b1(CLOCK_50, spacebar, resetn, row, game, start_data);
 
-    wire lit = start_data[39 - x[7:2]];   // delayed x lines up with the ROM output
+    wire lit = start_data[39 - x[7:2]];
 
     wire snake;
     snake_draw s1(x, y, pos_list, snake);
+    
+    //STAR MIF
 
-    wire [8:0] final_color = ~game ? (lit ? 9'b101_000_111 : 9'b000_000_000) :
-                             snake ? 9'b101_000_111 :
-                             wall  ? 9'b000_000_000 : 9'b111_111_111;
+    //position
+    wire [5:0] star_col = 6'd20;
+    wire [4:0] star_row = 5'd15;
+
+    wire in_star_tile = (x[7:2] == star_col) && (y[6:2] == star_row);
+
+    wire [1:0] star_dx   = x[1:0];
+    wire [1:0] star_dy   = y[1:0];
+    wire [3:0] star_addr = {star_dy, star_dx};
+
+    wire [8:0] star_color;
+    star_rom s (
+        .clock   (CLOCK_50),
+        .address (star_addr),
+        .Q       (star_color)
+    );
+
+    wire draw_star = game & in_star_tile;
+
+    // Update final_color
+    wire [8:0] final_color = ~game     ? (lit ? 9'b101_000_111 : 9'b000_000_000) :
+                             snake     ? 9'b101_000_111 :
+                             draw_star ? star_color :
+                             wall      ? 9'b000_000_000 : 9'b111_111_111;
 
     vga_adapter VGA (
         .resetn(KEY[0]),
@@ -76,18 +100,11 @@ module starter(clock, space, resetn, row, y_Q, start_data);
             y_Q <= y_D;
     end
 
-    start_rom rom1(clock, row, start_data);
-endmodule
-
-module start_rom(clock, address, Q);
-    input wire clock;
-    input wire [4:0] address;
-    output reg [39:0] Q;
-
-    (* ram_init_file = "start.mif" *) reg [39:0] memory [0:29];
-
-    always @(posedge clock)
-        Q <= memory[address];
+    start_rom start1 (
+        .clock   (CLOCK_50),
+        .address (row),
+        .Q       (start_data)
+    );
 endmodule
 
 //create maze, tell the vga adapter what colour to draw at each pixel
@@ -103,7 +120,10 @@ module maze_draw(clock, resetn, x, y, row, wall, write);
     reg [6:0] y_;
 
     wire [39:0] row_data;
-    maze_rom rom1(row, row_data);
+    maze_rom rom1 (
+        .address (row),
+        .Q      (row_data)
+    );
 
     assign wall = row_data[39 - x[7:2]];
 
@@ -143,17 +163,6 @@ module maze_draw(clock, resetn, x, y, row, wall, write);
             write <= 1'b1;
         end
     end
-endmodule
-
-// One asynchronous row lookup per instance, initialized from the maze MIF.
-module maze_rom(address, Q);
-    input wire [4:0] address;
-    output wire [39:0] Q;
-
-    // Rows 0-29 are the maze; addresses 30-33 are head, mid, tail, and exit.
-    (* ram_init_file = "maze2.mif" *) reg [39:0] memory [0:33];
-
-    assign Q = memory[address];
 endmodule
 
 //draw snake based on inputs

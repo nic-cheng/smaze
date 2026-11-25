@@ -1,0 +1,26 @@
+-- Quartus Memory Initialization File (.mif)
+-- 4x4 Star Sprite (9-bit RGB 3:3:3, matches vga_adapter color width)
+WIDTH=9;
+DEPTH=16;
+
+ADDRESS_RADIX=HEX;
+DATA_RADIX=HEX;
+
+CONTENT BEGIN
+    0 : 1FF;
+    1 : 1F0;
+    2 : 1F0;
+    3 : 1FF;
+    4 : 1F0;
+    5 : 1F0;
+    6 : 1F0;
+    7 : 1F0;
+    8 : 1FF;
+    9 : 1F0;
+    A : 1F0;
+    B : 1FF;
+    C : 1F0;
+    D : 1FF;
+    E : 1FF;
+    F : 1F0;
+END;

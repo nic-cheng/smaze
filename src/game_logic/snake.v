@@ -48,13 +48,18 @@ module snake (clock, resetn, move_enable, enable, start_pos, start_dir, kb_dir,
     end
 endmodule
 
-// Reads start and exit metadata from a separate MIF-backed memory.
+// Read metadata through the same single-address ROM interface used by the maze.
 module maze_metadata_rom(start_pos, end_pos);
     output wire [32:0] start_pos;
     output wire [10:0] end_pos;
 
-    (* ram_init_file = "maze2.mif" *) reg [39:0] memory [0:33];
+    wire [39:0] head_word, mid_word, tail_word, end_word;
 
-    assign start_pos = {memory[30][10:0], memory[31][10:0], memory[32][10:0]};
-    assign end_pos = memory[33][10:0];
+    maze_rom head_rom (5'd30, head_word);
+    maze_rom mid_rom  (5'd31, mid_word);
+    maze_rom tail_rom (5'd32, tail_word);
+    maze_rom exit_rom (5'd33, end_word);
+
+    assign start_pos = {head_word[10:0], mid_word[10:0], tail_word[10:0]};
+    assign end_pos = end_word[10:0];
 endmodule

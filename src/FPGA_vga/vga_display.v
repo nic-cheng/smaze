@@ -207,11 +207,11 @@ endmodule
 module clock_counter(Clk, resetn, tick); //big counter
 
     input Clk, resetn;
-    reg [23:0] Q; //24 bits fits 10,000,000
+    reg [22:0] Q; //24 bits fits 10,000,000
     output reg tick;
 
     always @ (*) begin
-        if (Q == 24'd4_999_999)
+        if (Q == 23'd4_999_999)
             tick = 1'b1;
         else
             tick = 1'b0;
@@ -219,7 +219,7 @@ module clock_counter(Clk, resetn, tick); //big counter
 
     always @(posedge Clk) begin
         if (tick || !resetn)
-            Q <= 24'b0;
+            Q <= 23'b0;
         else
             Q <= Q + 1'b1;
     end

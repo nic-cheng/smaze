@@ -20,9 +20,9 @@ module snake (clock, resetn, move_enable, enable, start_pos, start_dir, kb_dir,
     // Out of bounds handled by walls
     always @(*) begin
         case (kb_dir)
-            D_UP:       next_pos = {head_x       , head_y + 5'b1};
+            D_UP:       next_pos = {head_x       , head_y - 5'b1};
             D_LEFT:     next_pos = {head_x - 6'b1, head_y       };
-            D_DOWN:     next_pos = {head_x       , head_y - 5'b1};
+            D_DOWN:     next_pos = {head_x       , head_y + 5'b1};
             D_RIGHT:    next_pos = {head_x + 6'b1, head_y       };
             default:    next_pos = head_pos; // Shouldn't be possible
         endcase

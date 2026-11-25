@@ -4,7 +4,7 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_R, VGA_G, VGA_B, VGA
     input wire [3:0] KEY;
 
     output wire [9:0] LEDR;
-    assign LEDR = 10'b0;
+    // assign LEDR = 10'b0;
     inout wire PS2_CLK;
     inout wire PS2_DAT;
 
@@ -26,10 +26,13 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_R, VGA_G, VGA_B, VGA
     wire [32:0] start_pos;
     wire [10:0] end_pos;
     wire [32:0] pos_list;
+
     maze_metadata_rom metadata (
         .start_pos      (start_pos),
         .end_pos        (end_pos)
     );
+
+    assign LEDR = {2'b10, start_pos[7:0]};
 
     kb_interface kbi (
         .CLOCK_50   (CLOCK_50),

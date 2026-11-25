@@ -217,7 +217,7 @@ module clock_counter(Clk, resetn, tick); //big counter
             tick = 1'b0;
     end
 
-    always @(posedge Clk or negedge resetn) begin
+    always @(posedge Clk) begin
         if (tick || !resetn)
             Q <= 24'b0;
         else

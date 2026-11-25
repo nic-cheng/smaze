@@ -1,17 +1,13 @@
-# Run "do testbench.tcl" from keyboard/Simulator or
-# "do keyboard/Simulator/testbench.tcl" from the project root.
-# ModelSim's "do" does not set Tcl's script filename like "source" does.
-set script_path [info script]
-if {[file tail $script_path] eq "testbench.tcl"} {
-    set simulator_dir [file dirname [file normalize $script_path]]
-} elseif {[file isfile [file join [pwd] .. tb PS2_keyboard.v]]} {
-    set simulator_dir [pwd]
-} else {
-    set simulator_dir [file join [pwd] keyboard Simulator]
+# Run "do keyboard/testbench.tcl" from the repository's ModelSim directory.
+set modelsim_dir [pwd]
+if {[file tail [file normalize $modelsim_dir]] ne "ModelSim"} {
+    error "Run this script with the working directory set to smaze/ModelSim."
 }
-set keyboard_dir [file dirname $simulator_dir]
-if {![file isfile [file join $keyboard_dir tb PS2_keyboard.v]]} {
-    error "Keyboard sources not found. Run from keyboard/Simulator or the project root."
+set repo_dir [file normalize [file join $modelsim_dir ..]]
+set simulator_dir [file join $modelsim_dir keyboard]
+set keyboard_dir [file join $repo_dir src keyboard]
+if {![file isfile [file join $simulator_dir testbench.v]] || ![file isfile [file join $keyboard_dir top.v]]} {
+    error "Keyboard testbench or sources not found. Run from smaze/ModelSim."
 }
 
 quit -sim
@@ -19,8 +15,7 @@ if {![file isdirectory work]} {
     vlib work
 }
 
-vlog -work work [file join $keyboard_dir tb PS2_keyboard.v] \
-    [file join $keyboard_dir PS2_Controller Altera_UP_PS2_Data_In.v] \
+vlog -work work [file join $keyboard_dir PS2_Controller Altera_UP_PS2_Data_In.v] \
     [file join $keyboard_dir PS2_Controller Altera_UP_PS2_Command_Out.v] \
     [file join $keyboard_dir PS2_Controller PS2_Controller.v] \
     [file join $keyboard_dir kb_interface.v] \

@@ -15,8 +15,9 @@ module kb_demo(CLOCK_50, KEY, PS2_CLK, PS2_DAT, LEDR);
         .resetn     (resetn),
         .PS2_CLK    (PS2_CLK),
         .PS2_DAT    (PS2_DAT),
+        .snake_dir  (direction),
         .moving     (moving),
-        .direction  (direction),
+        .kb_dir     (direction),
         .spacebar   (spacebar)
     );
 

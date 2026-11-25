@@ -1,10 +1,11 @@
 // pos 40 x 30
 // 6 bit x 5 bit
-module snake (game_clk, resetn, enable, start_pos, direction, pos_list);
+module snake (game_clk, resetn, enable, start_pos, start_dir, kb_dir, pos_list, snake_dir);
     input wire game_clk, resetn, enable;
     input wire [32:0] start_pos;
-    input wire [1:0] direction;
+    input wire [1:0] start_dir, kb_dir;
     output reg [32:0] pos_list; // [32:22] head, [21:11] mid, [10:0] tail
+    output reg [1:0] snake_dir;
 
     wire [10:0] head_pos = pos_list[32:22];
     wire [5:0] head_x = head_pos[10:5];
@@ -17,7 +18,7 @@ module snake (game_clk, resetn, enable, start_pos, direction, pos_list);
 
     // Out of bounds handled by walls
     always @(*) begin
-        case (direction)
+        case (kb_dir)
             D_UP:       next_pos = {head_x       , head_y - 5'b1}; // Assuming it's like array math in C, check VGA implem
             D_LEFT:     next_pos = {head_x - 6'b1, head_y       };
             D_DOWN:     next_pos = {head_x       , head_y + 5'b1};
@@ -35,7 +36,13 @@ module snake (game_clk, resetn, enable, start_pos, direction, pos_list);
 
     // Shift if enabled and not running into a wall
     always @(posedge game_clk) begin
-        if (!resetn) pos_list <= start_pos;
-        else if (enable && can_move) pos_list <= {next_pos, pos_list[32:11]};
+        if (!resetn) begin
+            pos_list <= start_pos;
+            snake_dir <= start_dir;
+        end
+        else if (enable && can_move) begin
+            pos_list <= {next_pos, pos_list[32:11]};
+            snake_dir <= kb_dir;
+        end
     end
 endmodule

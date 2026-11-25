@@ -12,11 +12,9 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_X, VGA_Y, VGA_COLOR,
     output wire [23:0] VGA_COLOR;
     output wire plot;
 
-    wire [1:0] direction;
+    wire [1:0] start_dir, kb_dir, snake_dir;
     wire moving, spacebar;
  
-    
-
     vga_adapter VGA (
         .resetn     (KEY[0]),
         .clock      (CLOCK_50),
@@ -28,18 +26,21 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_X, VGA_Y, VGA_COLOR,
         .resetn     (KEY[0]),
         .PS2_CLK    (PS2_CLK),
         .PS2_DAT    (PS2_DAT),
+        .snake_dir  (snake_dir),
         .moving     (moving),
-        .direction  (direction),
+        .kb_dir     (kb_dir),
         .spacebar   (spacebar)
     );
 
     snake s (
         .game_clk   (game_clk),
         .resetn     (KEY[0]),
-        .enable     (enable),
+        .enable     (moving),
         .start_pos  (start_pos),
-        .direction  (direction),
-        .pos_list   (pos_list)
+        .start_dir  (start_dir),
+        .kb_dir     (kb_dir),
+        .pos_list   (pos_list),
+        .snake_dir  (snake_dir)
     );
 
 endmodule

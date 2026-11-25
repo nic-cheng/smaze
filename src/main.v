@@ -23,8 +23,14 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_R, VGA_G, VGA_B, VGA
     clock_counter cc (CLOCK_50, KEY[0], tick);
     wire game_clk = tick & game;
 
-    wire [32:0] start_pos = {{6'd3, 5'd1}, {6'd2, 5'd1}, {6'd1, 5'd1}};
+    wire [32:0] start_pos;
+    wire [10:0] end_pos;
     wire [32:0] pos_list;
+
+    maze_metadata_rom metadata (
+        .start_pos (start_pos),
+        .end_pos   (end_pos)
+    );
 
     kb_interface kbi (
         .CLOCK_50   (CLOCK_50),

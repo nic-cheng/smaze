@@ -150,7 +150,8 @@ module maze_rom(address, Q);
     input wire [4:0] address;
     output wire [39:0] Q;
 
-    (* ram_init_file = "maze1.mif" *) reg [39:0] memory [0:29];
+    // Addresses 0-29 are maze rows; 30-33 store start head/mid/tail and exit.
+    (* ram_init_file = "maze2.mif" *) reg [39:0] memory [0:33];
 
     // initial $readmemb("maze1.txt", memory); // modelsim only
 

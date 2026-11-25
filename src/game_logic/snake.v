@@ -46,3 +46,15 @@ module snake (game_clk, resetn, enable, start_pos, start_dir, kb_dir, pos_list, 
         end
     end
 endmodule
+
+// Reads start and exit metadata from the same MIF used by maze_rom.
+// MIF addresses 30, 31, 32, and 33 contain head, mid, tail, and exit.
+module maze_metadata_rom(start_pos, end_pos);
+    output wire [32:0] start_pos;
+    output wire [10:0] end_pos;
+
+    (* ram_init_file = "maze2.mif" *) reg [39:0] memory [0:33];
+
+    assign start_pos = {memory[30][10:0], memory[31][10:0], memory[32][10:0]};
+    assign end_pos = memory[33][10:0];
+endmodule

@@ -13,7 +13,7 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_X, VGA_Y, VGA_COLOR,
     output wire plot;
 
     wire [1:0] direction;
-    wire moving;
+    wire moving, spacebar;
  
     
 
@@ -29,7 +29,8 @@ module main (CLOCK_50, SW, KEY, LEDR, PS2_CLK, PS2_DAT, VGA_X, VGA_Y, VGA_COLOR,
         .PS2_CLK    (PS2_CLK),
         .PS2_DAT    (PS2_DAT),
         .moving     (moving),
-        .direction  (direction)
+        .direction  (direction),
+        .spacebar   (spacebar)
     );
 
     snake s (

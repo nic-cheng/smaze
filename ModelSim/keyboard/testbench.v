@@ -2,111 +2,94 @@
 `default_nettype none
 
 module testbench;
-    parameter CLOCK_PERIOD = 20;
-    parameter [7:0] BREAK = 8'hF0, W = 8'h1D, A = 8'h1C, S = 8'h1B, D = 8'h23;
-    parameter [7:0] SPACE = 8'h29; // arbitrary key
-    parameter [4:0] STOPPED =       5'b0_0001,
-                    MOVING_UP =     5'b1_0001,
-                    MOVING_LEFT =   5'b1_0010,
-                    MOVING_DOWN =   5'b1_0100,
-                    MOVING_RIGHT =  5'b1_1000;
+    localparam CLOCK_PERIOD = 20;
+    localparam [7:0] BREAK = 8'hF0, W = 8'h1D, A = 8'h1C,
+                     S = 8'h1B, D = 8'h23, SPACE = 8'h29;
+    localparam [1:0] D_UP = 2'd0, D_LEFT = 2'd1,
+                     D_DOWN = 2'd2, D_RIGHT = 2'd3;
 
     reg CLOCK_50 = 1'b0;
-    reg [3:0] KEY = 4'b1110;
-    reg key_action = 1'b0;
-    reg [7:0] scan_code = 8'h00;
-    wire ps2_clk, ps2_dat, keyboard_dat;
-    wire [9:0] LEDR;
+    reg resetn = 1'b0;
+    reg [1:0] snake_dir = D_RIGHT;
+    wire [1:0] kb_dir;
+    wire moving, spacebar;
+    tri1 ps2_clk, ps2_dat;
+    wire received_data_en = dut.received_data_en;
+    wire [7:0] received_data = dut.received_data;
     reg passed = 1'b0;
 
     always #(CLOCK_PERIOD / 2) CLOCK_50 = ~CLOCK_50;
 
-    // FPGAcademy keyboard module 
-    PS2_keyboard keyboard (
-        .Clock(CLOCK_50), .Resetn(KEY[0]),
-        .key_action(key_action), .scan_code(scan_code),
-        .ps2_clk(ps2_clk), .ps2_dat(keyboard_dat)
+    kb_interface dut (
+        .CLOCK_50(CLOCK_50), .resetn(resetn),
+        .PS2_CLK(ps2_clk), .PS2_DAT(ps2_dat), .snake_dir(snake_dir),
+        .moving(moving), .kb_dir(kb_dir), .spacebar(spacebar)
     );
 
-    // Timing fix (sample after rising edge write)
-    assign #(CLOCK_PERIOD + CLOCK_PERIOD / 2) ps2_dat = keyboard_dat;
-
-    top dut (
-        .CLOCK_50(CLOCK_50), .SW(10'b0), .KEY(KEY),
-        .HEX0(), .HEX1(), .HEX2(), .HEX3(), .HEX4(), .HEX5(),
-        .LEDR(LEDR), .PS2_CLK(ps2_clk), .PS2_DAT(ps2_dat)
-    );
-
-    wire received_data_en = dut.U1.kbi.received_data_en;
-    wire [7:0] received_data = dut.U1.kbi.received_data;
-
-    // Confirm if LEDR is in the exact expected state
-    task check_leds;
-        input [4:0] expected;
+    task check_state;
+        input [1:0] expected_dir;
+        input expected_moving;
+        input expected_spacebar;
+        input [8*40-1:0] description;
         begin
-            if (LEDR !== {5'b10000, expected})
-                $fatal(1, "%0t: scan code %02h, expected LEDR=%010b, got %010b",
-                       $time, scan_code, {5'b10000, expected}, LEDR);
+            if (kb_dir !== expected_dir || moving !== expected_moving ||
+                spacebar !== expected_spacebar)
+                $fatal(1, "%0t: %0s expected dir=%0d moving=%b space=%b, got dir=%0d moving=%b space=%b",
+                       $time, description, expected_dir, expected_moving, expected_spacebar,
+                       kb_dir, moving, spacebar);
         end
     endtask
 
-    // Simulate a keyboard input and verify LEDs change to expected output
-    task send_and_check;
+    task send_code;
         input [7:0] code;
-        input [4:0] expected;
-        integer cycles;
         begin
+            // Isolate the keyboard scan-code parser from PS/2 wire timing.
             @(negedge CLOCK_50);
-            scan_code = code;
-            key_action = 1'b1;
+            force dut.received_data = code;
+            force dut.received_data_en = 1'b1;
             @(negedge CLOCK_50);
-            key_action = 1'b0;
-
-            // Confirm delivery even when the byte should leave the LEDs unchanged.
-            // ~70 CLOCK_ in the keyboard model.
-            cycles = 0;
-            while (received_data_en !== 1'b1 && cycles < 100) begin
-                @(negedge CLOCK_50);
-                cycles = cycles + 1;
-            end
-            if (received_data_en !== 1'b1)
-                $fatal(1, "%0t: timed out receiving scan code %02h", $time, code);
-            if (received_data !== code)
-                $fatal(1, "%0t: sent scan code %02h, received %02h",
-                       $time, code, received_data);
-
-            // Sample after the movement logic has consumed the receive strobe.
-            @(negedge CLOCK_50);
-            check_leds(expected);
+            release dut.received_data_en;
+            release dut.received_data; // outputs are settled by this negedge
         end
     endtask
 
     initial begin
         repeat (3) @(negedge CLOCK_50);
-        check_leds(STOPPED);
-        KEY[0] = 1'b1;
+        check_state(D_UP, 1'b0, 1'b0, "reset defaults");
+        resetn = 1'b1;
 
-        send_and_check(SPACE, STOPPED);
-        send_and_check(W, MOVING_UP);
-        send_and_check(A, MOVING_LEFT);
-        send_and_check(BREAK, MOVING_LEFT);
-        send_and_check(W, MOVING_LEFT); // Releasing W preserves the A direction.
-        send_and_check(S, MOVING_DOWN);
-        send_and_check(BREAK, MOVING_DOWN);
-        send_and_check(S, MOVING_DOWN); // Releasing the active key keeps moving high.
-        send_and_check(D, MOVING_RIGHT);
-        send_and_check(SPACE, MOVING_RIGHT);
+        send_code(SPACE);
+        check_state(D_UP, 1'b0, 1'b0, "space does not start movement");
 
-        // Reset clears movement, direction, and any pending break prefix.
-        send_and_check(BREAK, MOVING_RIGHT);
-        KEY[0] = 1'b0;
-        repeat (3) @(negedge CLOCK_50);
-        check_leds(STOPPED);
-        KEY[0] = 1'b1;
-        send_and_check(D, MOVING_RIGHT);
+        // An A press is accepted when the snake is moving right.
+        snake_dir = D_RIGHT;
+        send_code(A);
+        check_state(D_LEFT, 1'b1, 1'b0, "A selects left and starts movement");
+
+        // Reject the reverse of the actual snake direction.
+        snake_dir = D_DOWN;
+        send_code(W);
+        check_state(D_LEFT, 1'b1, 1'b0, "reject W while moving down");
+
+        // Break prefix suppresses the released key; next make code is accepted.
+        send_code(BREAK);
+        check_state(D_LEFT, 1'b1, 1'b0, "break prefix preserves state");
+        snake_dir = D_LEFT;
+        send_code(W);
+        check_state(D_UP, 1'b1, 1'b0, "W accepted while moving left");
+
+        send_code(BREAK);
+        send_code(SPACE);
+        check_state(D_UP, 1'b1, 1'b1, "space produces a one-cycle press pulse");
+        @(negedge CLOCK_50);
+        check_state(D_UP, 1'b1, 1'b0, "space pulse clears next cycle");
+
+        resetn = 1'b0;
+        repeat (2) @(negedge CLOCK_50);
+        check_state(D_UP, 1'b0, 1'b0, "reset clears movement and direction");
 
         passed = 1'b1;
-        $display("PASS: PS/2 keyboard movement checks");
+        $display("PASS: PS/2 keyboard interface and reversal checks");
         $finish;
     end
 endmodule

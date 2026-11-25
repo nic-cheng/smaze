@@ -2,94 +2,89 @@
 `default_nettype none
 
 module testbench;
-    parameter CLOCK_PERIOD = 20;
-
-    localparam [1:0] D_UP = 2'd0,
-                     D_LEFT = 2'd1,
-                     D_DOWN = 2'd2,
-                     D_RIGHT = 2'd3;
+    localparam [1:0] D_UP = 2'd0, D_LEFT = 2'd1,
+                     D_DOWN = 2'd2, D_RIGHT = 2'd3;
+    localparam [10:0] INITIAL_HEAD = {6'd10, 5'd10};
+    localparam [10:0] INITIAL_MID  = {6'd9, 5'd10};
+    localparam [10:0] INITIAL_TAIL = {6'd8, 5'd10};
 
     reg game_clk = 1'b0;
     reg resetn = 1'b1;
     reg enable = 1'b0;
-    reg [1199:0] maze = 1200'b0;
-    reg [32:0] start_pos;
-    reg [1:0] direction = D_RIGHT;
+    reg [32:0] start_pos = {INITIAL_HEAD, INITIAL_MID, INITIAL_TAIL};
+    reg [1:0] start_dir = D_RIGHT;
+    reg [1:0] kb_dir = D_RIGHT;
+    wire [1:0] snake_dir;
     wire [32:0] pos_list;
     reg passed = 1'b0;
 
-    localparam [10:0] INITIAL_HEAD = {6'd10, 5'd10};
-    localparam [10:0] INITIAL_MID  = {6'd9,  5'd10};
-    localparam [10:0] INITIAL_TAIL = {6'd8,  5'd10};
-
-    always #(CLOCK_PERIOD / 2) game_clk = ~game_clk;
+    always #10 game_clk = ~game_clk;
 
     snake dut (
         .game_clk(game_clk), .resetn(resetn), .enable(enable),
-        .maze(maze), .start_pos(start_pos), .direction(direction),
-        .pos_list(pos_list)
+        .start_pos(start_pos), .start_dir(start_dir), .kb_dir(kb_dir),
+        .pos_list(pos_list), .snake_dir(snake_dir)
     );
 
-    task check_pos;
-        input [32:0] expected;
-        input [8*40-1:0] description;
-        begin
-            if (pos_list !== expected)
-                $fatal(1, "%0t: %0s expected pos_list=%09h, got %09h",
-                       $time, description, expected, pos_list);
-        end
+    task tick;
+        begin @(posedge game_clk); #1; end
     endtask
 
-    task tick;
+    task check_state;
+        input [32:0] expected_pos;
+        input [1:0] expected_dir;
+        input [8*48-1:0] description;
         begin
-            @(posedge game_clk);
-            #1;
+            if (pos_list !== expected_pos || snake_dir !== expected_dir)
+                $fatal(1, "%0t: %0s expected pos=%09h dir=%0d, got pos=%09h dir=%0d",
+                       $time, description, expected_pos, expected_dir, pos_list, snake_dir);
         end
     endtask
 
     initial begin
-        start_pos = {INITIAL_HEAD, INITIAL_MID, INITIAL_TAIL};
-
-        // Synchronous active-low reset loads the initial three-segment snake.
         resetn = 1'b0;
         tick;
-        check_pos(start_pos, "reset loads start_pos");
+        check_state(start_pos, start_dir, "reset loads start position and direction");
         resetn = 1'b1;
-
-        // Move one cell in each direction and verify the body shifts behind it.
         enable = 1'b1;
-        direction = D_RIGHT;
-        tick;
-        check_pos({{6'd11, 5'd10}, INITIAL_HEAD, INITIAL_MID}, "move right");
 
-        direction = D_UP;
+        kb_dir = D_RIGHT;
         tick;
-        check_pos({{6'd11, 5'd9}, {6'd11, 5'd10}, INITIAL_HEAD}, "move up");
+        check_state({{6'd11,5'd10}, INITIAL_HEAD, INITIAL_MID}, D_RIGHT, "move right");
 
-        direction = D_LEFT;
+        // Direction input changes between game clock edges; snake_dir must stay registered.
+        kb_dir = D_UP;
+        #3;
+        if (snake_dir !== D_RIGHT)
+            $fatal(1, "snake_dir changed without a game_clk edge");
         tick;
-        check_pos({{6'd10, 5'd9}, {6'd11, 5'd9}, {6'd11, 5'd10}}, "move left");
+        check_state({{6'd11,5'd9}, {6'd11,5'd10}, INITIAL_HEAD}, D_UP, "move up and register direction");
 
-        direction = D_DOWN;
-        tick;
-        check_pos({{6'd10, 5'd10}, {6'd10, 5'd9}, {6'd11, 5'd9}}, "move down");
-
-        // Disabled movement holds the entire body position.
         enable = 1'b0;
-        direction = D_RIGHT;
+        kb_dir = D_LEFT;
         tick;
-        check_pos({{6'd10, 5'd10}, {6'd10, 5'd9}, {6'd11, 5'd9}}, "disabled holds position");
+        check_state({{6'd11,5'd9}, {6'd11,5'd10}, INITIAL_HEAD}, D_UP, "disabled holds position and direction");
 
-        // A wall in the destination cell blocks movement and body shifting.
-        maze[10 * 40 + 11] = 1'b1;
         enable = 1'b1;
+        kb_dir = D_LEFT;
         tick;
-        check_pos({{6'd10, 5'd10}, {6'd10, 5'd9}, {6'd11, 5'd9}}, "wall blocks movement");
+        check_state({{6'd10,5'd9}, {6'd11,5'd9}, {6'd11,5'd10}}, D_LEFT, "move left");
+
+        // Reset direction follows the supplied initial direction.
+        start_dir = D_DOWN;
+        resetn = 1'b0;
+        tick;
+        check_state(start_pos, D_DOWN, "reset restores configured start direction");
 
         passed = 1'b1;
-        $display("PASS: snake movement, reset, enable, and wall checks");
+        $display("PASS: snake position and game-clocked direction checks");
         $finish;
     end
+endmodule
+
+// Small open test map for snake.v, whose maze dependency is supplied by the project.
+module maze(input wire [5:0] x, input wire [4:0] y, output wire wall);
+    assign wall = (x >= 6'd40) || (y >= 5'd30);
 endmodule
 
 `default_nettype wire

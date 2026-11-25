@@ -2,14 +2,13 @@
 """Generate a 40 x 30, two-cell-wide perfect maze and Quartus MIF.
 
 The maze is stored as one 40-bit word per row: 1 is a wall and 0 is a path.
-The adjacent JSON file contains snake start and goal coordinates. Coordinates
-use the RTL convention {x[5:0], y[4:0]} (x is column, y is row).
+Start and goal metadata are stored in MIF addresses 30-33 using the RTL
+coordinate convention {x[5:0], y[4:0]} (x is column, y is row).
 """
 
 from __future__ import annotations
 
 import argparse
-import json
 import random
 from pathlib import Path
 
@@ -29,10 +28,10 @@ def make_maze(seed: int) -> tuple[list[list[int]], dict[str, object]]:
     rng = random.Random(seed)
     maze = [[1 for _ in range(WIDTH)] for _ in range(HEIGHT)]
 
-    # Block origins are x=1,4,...,34 and y=1,4,...,25. The outer border
-    # remains one cell thick. This leaves an unused 2-cell strip at right/bottom.
+    # Block origins are x=1,4,...,37 and y=2,5,...,26. The vertical layout
+    # uses two wall rows at both the top and bottom to balance the padding.
     cols = list(range(1, WIDTH - 2, 3))
-    rows = list(range(1, HEIGHT - 2, 3))
+    rows = list(range(2, HEIGHT - 2, 3))
     if len(cols) < 2 or len(rows) < 2:
         raise ValueError("maze dimensions are too small")
 
@@ -115,14 +114,19 @@ def write_mif(path: Path, maze: list[list[int]], metadata: dict[str, object]) ->
         "DATA_RADIX=BIN;",
         "CONTENT BEGIN",
     ]
-    lines.extend(f"    {y} : {''.join(map(str, row))};" for y, row in enumerate(maze))
+    lines.extend(
+        f"    {y:>2} : {''.join(map(str, row))};"
+        for y, row in enumerate(maze)
+    )
     starts = metadata["start_positions"]
     assert isinstance(starts, dict)
     for address, segment in zip((30, 31, 32), ("head", "mid", "tail")):
         position = starts[segment]
         assert isinstance(position, dict)
         packed = (int(position["x"]) << 5) | int(position["y"])
-        lines.append(f"    {address} : {packed:040b}; -- {segment}: {{x[5:0], y[4:0]}}")
+        lines.append(
+            f"    {address:>2} : {packed:040b}; -- {segment}: {{x[5:0], y[4:0]}}"
+        )
     end = metadata["end_position"]
     assert isinstance(end, dict)
     end_packed = (int(end["x"]) << 5) | int(end["y"])
@@ -135,17 +139,13 @@ def write_mif(path: Path, maze: list[list[int]], metadata: dict[str, object]) ->
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--seed", type=int, default=1, help="random seed (default: 1)")
-    parser.add_argument("--mif", type=Path, default=Path("src/FPGA_vga/MIF/maze1.mif"))
-    parser.add_argument("--metadata", type=Path, default=Path("src/FPGA_vga/MIF/maze1.json"))
+    project_root = Path(__file__).resolve().parent.parent
     args = parser.parse_args()
 
     maze, metadata = make_maze(args.seed)
-    write_mif(args.mif, maze, metadata)
-    args.metadata.parent.mkdir(parents=True, exist_ok=True)
-    args.metadata.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
-    print(f"Wrote {args.mif} and {args.metadata}")
-    print(f"Start packed head/mid/tail: {metadata['start_pos_packed_33bit']}")
-    print(f"End packed: {metadata['end_position_packed_11bit']}")
+    output_path = project_root / "maze2.mif"
+    write_mif(output_path, maze, metadata)
+    print(f"Wrote {output_path}")
 
 
 if __name__ == "__main__":

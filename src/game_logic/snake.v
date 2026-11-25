@@ -1,9 +1,12 @@
 // pos 40 x 30
 // 6 bit x 5 bit
-module snake (game_clk, resetn, enable, start_pos, start_dir, kb_dir, pos_list, snake_dir);
+module snake (game_clk, resetn, enable, start_pos, start_dir, kb_dir,
+              maze_row, maze_address, pos_list, snake_dir);
     input wire game_clk, resetn, enable;
     input wire [32:0] start_pos;
     input wire [1:0] start_dir, kb_dir;
+    input wire [39:0] maze_row;
+    output wire [4:0] maze_address;
     output reg [32:0] pos_list; // [32:22] head, [21:11] mid, [10:0] tail
     output reg [1:0] snake_dir;
 
@@ -29,10 +32,8 @@ module snake (game_clk, resetn, enable, start_pos, start_dir, kb_dir, pos_list, 
     
     // Instantiate maze and check for walls
     wire [5:0] next_x = next_pos[10:5];
-    wire [4:0] next_y = next_pos[4:0];
-    wire [39:0] row;
-    maze_rom m (next_y, row);
-    wire can_move = !row[39 - next_x];
+    assign maze_address = next_pos[4:0];
+    wire can_move = !maze_row[39 - next_x];
 
     // Shift if enabled and not running into a wall
     always @(posedge game_clk) begin
@@ -45,16 +46,4 @@ module snake (game_clk, resetn, enable, start_pos, start_dir, kb_dir, pos_list, 
             snake_dir <= kb_dir;
         end
     end
-endmodule
-
-// Reads start and exit metadata from the same MIF used by maze_rom.
-// MIF addresses 30, 31, 32, and 33 contain head, mid, tail, and exit.
-module maze_metadata_rom(start_pos, end_pos);
-    output wire [32:0] start_pos;
-    output wire [10:0] end_pos;
-
-    (* ram_init_file = "maze2.mif" *) reg [39:0] memory [0:33];
-
-    assign start_pos = {memory[30][10:0], memory[31][10:0], memory[32][10:0]};
-    assign end_pos = memory[33][10:0];
 endmodule

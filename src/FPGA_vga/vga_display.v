@@ -173,7 +173,7 @@ module snake_draw(x, y, pos_list, snake);
     output snake;
 
     wire [4:0] row = y[6:2];
-    wire [5:0] col = x[7:2]; //drop bottom three bits to scale it
+    wire [5:0] col = x[7:2]; //drop bottom two bits to scale it
     wire [10:0] block = {col, row};
 
     assign snake = (block == pos_list[32:22]) | (block == pos_list[21:11]) | (block == pos_list[10:0]);
@@ -216,7 +216,7 @@ endmodule
 module clock_counter(Clk, resetn, tick); //big counter
 
     input Clk, resetn;
-    reg [22:0] Q; //24 bits fits 10,000,000
+    reg [22:0] Q;
     output reg tick;
 
     always @ (*) begin

@@ -7,3 +7,5 @@ db
 incremental_db
 ModelSim/*/work
 ModelSim/*/vsim.wlf
+ModelSim/work
+ModelSim/vsim.wlf

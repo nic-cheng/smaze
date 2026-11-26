@@ -60,7 +60,7 @@ module vga_display(CLOCK_50, KEY, pos_list, spacebar, VGA_R, VGA_G, VGA_B,
     wire draw_star = game & in_star_tile;
 
     // Update final_color
-    wire [8:0] final_color = ~game     ? (lit ? 9'b101_000_111 : 9'b000_000_000) :
+    wire [8:0] final_color = ~game     ? (lit ? 9'b000_000_000 : 9'b101_000_111) : //start
                              snake     ? 9'b101_000_111 :
                              draw_star ? star_color :
                              wall      ? 9'b000_000_000 : 9'b111_111_111;
